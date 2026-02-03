@@ -23,7 +23,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        # colora lo schermo di verde
+        # colora lo schermo di rosa
     screen.fill("pink")
     screen.blit(Titolo, (100, 50))
     screen.blit(modalità, (100,110))
