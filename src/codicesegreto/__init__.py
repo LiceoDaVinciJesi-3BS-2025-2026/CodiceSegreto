@@ -108,13 +108,55 @@ while running:
         testo2 = Normalfont.render("Il computer penserà a 4 numeri (da 1 a 6)", True, "Black")
         testo3 = Normalfont.render("Tu dovrai indovinarli in 10 tentativi", True, "Black")
         testo4 = Normalfont.render("Premi ESC per tornare al menu", True, "Red")
+        testo5 = Normalfont.render("premi I per iniziare", True, "Black")
         
         # Scrive tutto centrato
         screen.blit(testo1, ((larghezza_schermo - testo1.get_width()) // 2, 200))
         screen.blit(testo2, ((larghezza_schermo - testo2.get_width()) // 2, 270))
         screen.blit(testo3, ((larghezza_schermo - testo3.get_width()) // 2, 340))
         screen.blit(testo4, ((larghezza_schermo - testo4.get_width()) // 2, 450))
-    
+        screen.blit(testo5, ((larghezza_schermo - testo5.get_width()) // 2, 570))
+
+     #se preme I
+        if event.key == pygame.K_I:
+            screen.fill((216, 191, 216)) # Thiestle
+       #creazione del codice 
+            import random
+            codice = ""
+            for cifre in range (4):
+                cifra = random.randint(1, 6)
+                codice += cifra
+        #tentativi per indovinare il codice
+            for tentativi in range (10):
+                #verifica che il numero di cifre sia corretto
+                while True:
+                    prova = str(input(f"tentativo {tentativi}, inserire il codice:"))
+                    if len(prova) == 4:
+                        break
+                        
+                    elif len(prova) > 4:
+                        print("hai inserito troppe cifre, ricorda, devono essere solo 4")
+                    else:
+                        print("hai inserito troppe poche cifre, ricorda, devono essere 4")
+
+                testo7 = Normalfont.render(f"{prova}", True, "Black")
+                        
+                if prova == codice:
+                    testo6 = Normalfont.render(f"Hai vinto in {tentativi} tentativi!", True, "Black")
+                    screen.blit(testo6, ((larghezza_schermo - testo6.get_width()) // 2, 200))
+                    screen.blit(testo4, ((larghezza_schermo - testo4.get_width()) // 2, 450))
+                    break
+                    
+                else:
+                    for elemento in codice:
+                        if elemento in prova:
+                            print(f"{elemento} presente del codice")
+                    for pos in range (0, 4):
+                        if codice[pos] == prova[pos]:
+                            print(f"{codice[pos]} è nella posizione giusta")
+                    continue
+                            
+                                                        
     # se siamo nella finestra lettere
     elif dove_siamo == "lettere":
         # Sfondo giallo chiaro
@@ -129,12 +171,14 @@ while running:
         testo_2 = Normalfont.render("Il computer penserà a 4 lettere (dalla a alla z)", True, "Black")
         testo_3 = Normalfont.render("Tu dovrai indovinarli in 10 tentativi", True, "Black")
         testo_4 = Normalfont.render("Premi ESC per tornare al menu", True, "Red")
+        testo_5 = Normalfont.render("premi I per iniziare", True, "Black")
         
         # Scrive centrato
         screen.blit(testo_1, ((larghezza_schermo - testo_1.get_width()) // 2, 200))
         screen.blit(testo_2, ((larghezza_schermo - testo_2.get_width()) // 2, 270))
         screen.blit(testo_3, ((larghezza_schermo - testo_3.get_width()) // 2, 340))
         screen.blit(testo_4, ((larghezza_schermo - testo_4.get_width()) // 2, 450))
+        screen.blit(testo_5, ((larghezza_schermo - testo_5.get_width()) // 2, 570))
     
     # se siamo nella finestra colori
     elif dove_siamo == "colori":
@@ -151,6 +195,7 @@ while running:
         testo__3 = Normalfont.render("I colori possibili sono blu, rosso, arancione, giallo, viola", True, "Black")
         testo__4 = Normalfont.render("Tu dovrai indovinarli in 10 tentativi", True, "Black")
         testo__5 = Normalfont.render("Premi ESC per tornare al menu", True, "Red")
+        testo__6 = Normalfont.render("premi I per iniziare", True, "Black")
         
         # Scirve tutto centrato
         screen.blit(testo__1, ((larghezza_schermo - testo__1.get_width()) // 2, 170))
@@ -158,6 +203,7 @@ while running:
         screen.blit(testo__3, ((larghezza_schermo - testo__3.get_width()) // 2, 300))
         screen.blit(testo__4, ((larghezza_schermo - testo__4.get_width()) // 2, 370))
         screen.blit(testo__5, ((larghezza_schermo - testo__5.get_width()) // 2, 450))
+        screen.blit(testo__6, ((larghezza_schermo - testo__56.get_width()) // 2, 570))
     
     # Aggiorna il contenuto dello schermo
     pygame.display.flip()
