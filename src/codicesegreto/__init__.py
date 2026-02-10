@@ -203,7 +203,7 @@ while running:
         screen.blit(testo__3, ((larghezza_schermo - testo__3.get_width()) // 2, 300))
         screen.blit(testo__4, ((larghezza_schermo - testo__4.get_width()) // 2, 370))
         screen.blit(testo__5, ((larghezza_schermo - testo__5.get_width()) // 2, 450))
-        screen.blit(testo__6, ((larghezza_schermo - testo__56.get_width()) // 2, 570))
+        screen.blit(testo__6, ((larghezza_schermo - testo__6.get_width()) // 2, 570))
     
     # Aggiorna il contenuto dello schermo
     pygame.display.flip()
