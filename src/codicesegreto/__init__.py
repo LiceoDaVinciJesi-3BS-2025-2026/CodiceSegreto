@@ -25,7 +25,7 @@ codice_segreto = ""
 tentativo_corrente = ""
 tentativi_fatti = 0
 feedback_dettagliato = ["", "", "", ""]
-storico_tentativi = []
+storico_tentativi = []  # Qui salviamo TUTTI i codici in ordine
 gioco_finito = False
 risultato = ""
 
@@ -83,8 +83,10 @@ while running:
                 elif event.key == pygame.K_RETURN and len(tentativo_corrente) == 4:
                     tentativi_fatti += 1
                     
+                    # SALVA IL TENTATIVO NELLO STORICO
                     storico_tentativi.append(tentativo_corrente)
                     
+                    # CALCOLA FEEDBACK DETTAGLIATO
                     feedback_dettagliato = ["", "", "", ""]
                     
                     for pos in range(4):
@@ -159,18 +161,18 @@ while running:
             screen.blit(titolo_gioco, (x_titolo, 30))
             
             # ==============================================
-            # AREA GIOCO PRINCIPALE (leggermente più in basso)
+            # AREA GIOCO PRINCIPALE
             # ==============================================
             
             tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
-            screen.blit(tentativi_text, (150, 160))  # DA 140 A 160 (20 px più in basso)
+            screen.blit(tentativi_text, (150, 160))
             
             input_label = Normalfont.render("Inserisci 4 numeri (1-6):", True, (0, 0, 0))
-            screen.blit(input_label, (150, 230))  # DA 200 A 230 (30 px più in basso)
+            screen.blit(input_label, (150, 230))
             
             for i in range(4):
                 x = 150 + i * 120
-                y = 300  # DA 260 A 300 (40 px più in basso)
+                y = 300
                 
                 colore_casella = (180, 220, 255) if i < len(tentativo_corrente) else (255, 255, 255)
                 pygame.draw.rect(screen, colore_casella, (x, y, 80, 80), border_radius=10)
@@ -188,13 +190,13 @@ while running:
                     screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
             
             # ==============================================
-            # SUGGERIMENTI (a destra, allineati)
+            # SUGGERIMENTI
             # ==============================================
             if feedback_dettagliato[0] or storico_tentativi:
                 suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
-                screen.blit(suggerimenti_label, (700, 160))  # Allineato con tentativi
+                screen.blit(suggerimenti_label, (700, 160))
                 
-                y_pos = 210  # DA 190 A 210
+                y_pos = 210
                 if feedback_dettagliato[0]:
                     for i, fb in enumerate(feedback_dettagliato):
                         if fb:
@@ -219,30 +221,29 @@ while running:
                         y_pos += 30
             
             # ==============================================
-            # ULTIMI TENTATIVI (a destra, più in basso)
+            # TUTTI I TENTATIVI (in ordine 1), 2), 3)...) - PIÙ IN BASSO
             # ==============================================
             if storico_tentativi:
-                storico_label = Normalfont.render("ULTIMI TENTATIVI:", True, (0, 0, 150))
-                screen.blit(storico_label, (700, 380))  # DA 340 A 380
+                storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
+                screen.blit(storico_label, (700, 370))  # DA 340 A 370 (30 px più in basso)
                 
-                y_pos = 430  # DA 390 A 430
-                inizio = max(0, len(storico_tentativi) - 5)
-                for i in range(inizio, len(storico_tentativi)):
+                y_pos = 420  # DA 390 A 420 (30 px più in basso)
+                # Mostra TUTTI i tentativi fatti finora, in ordine
+                for i, codice in enumerate(storico_tentativi):
                     numero = i + 1
-                    codice = storico_tentativi[i]
                     tent_text = Fontpiccolo.render(f"{numero}) {codice}", True, (0, 0, 0))
                     screen.blit(tent_text, (720, y_pos))
-                    y_pos += 35
+                    y_pos += 30
             
             # ==============================================
-            # CONSIGLIO (più in basso)
+            # CONSIGLIO
             # ==============================================
-            rettangolo_consiglio = pygame.Rect(150, 440, 380, 240)  # DA 380 A 440 (60 px più in basso)
+            rettangolo_consiglio = pygame.Rect(150, 440, 380, 200)
             pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
             pygame.draw.rect(screen, (100, 100, 100), rettangolo_consiglio, 3, border_radius=15)
             
             consiglio_titolo = Normalfont.render("CONSIGLIO:", True, (0, 0, 150))
-            screen.blit(consiglio_titolo, (160, 450))  # DA 390 A 450
+            screen.blit(consiglio_titolo, (160, 450))
             
             if tentativi_fatti >= 6:
                 pari = 0
@@ -267,7 +268,7 @@ while running:
                     colore_consiglio = (200, 100, 0)
                 
                 consiglio_line1 = Fontpiccolo.render(consiglio_testo, True, colore_consiglio)
-                screen.blit(consiglio_line1, (170, 500))  # DA 440 A 500
+                screen.blit(consiglio_line1, (170, 490))
                 
                 consigli_dettagli = [
                     f"Pari: {pari} | Dispari: {dispari}",
@@ -275,7 +276,7 @@ while running:
                     f"Hai {10 - tentativi_fatti} tentativi rimasti"
                 ]
                 
-                y_pos_consigli = 540  # DA 480 A 540
+                y_pos_consigli = 530
                 for dettaglio in consigli_dettagli:
                     testo_det = Fontpiccolo.render(dettaglio, True, (80, 80, 80))
                     screen.blit(testo_det, (170, y_pos_consigli))
@@ -289,10 +290,10 @@ while running:
                     messaggio = f"Disponibile tra {tentativi_mancanti} tentativi"
                 
                 testo_attesa = Fontpiccolo.render(messaggio, True, (150, 150, 150))
-                screen.blit(testo_attesa, (200, 520))  # DA 460 A 520
+                screen.blit(testo_attesa, (200, 500))
             
             # ==============================================
-            # ISTRUZIONI (lasciate uguali)
+            # ISTRUZIONI
             # ==============================================
             istruzioni = [
                 "ISTRUZIONI:",
@@ -302,7 +303,7 @@ while running:
                 "- ESC per tornare"
             ]
             
-            y_pos = 700  # DA 680 A 700 (20 px più in basso)
+            y_pos = 670
             for testo in istruzioni:
                 colore = (100, 100, 100) if not testo.startswith("ISTRUZIONI") else (0, 0, 0)
                 testo_render = Fontpiccolo.render(testo, True, colore)
