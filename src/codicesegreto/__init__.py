@@ -161,7 +161,7 @@ while running:
             screen.blit(titolo_gioco, (x_titolo, 30))
             
             # ==============================================
-            # AREA GIOCO PRINCIPALE
+            # AREA GIOCO NUMERI PRINCIPALE
             # ==============================================
             
             tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
@@ -353,26 +353,96 @@ while running:
             rigioca_text = Normalfont.render("Premi I per rigiocare", True, (0, 0, 0))
             x_rigioca = (larghezza_schermo - rigioca_text.get_width()) // 2
             screen.blit(rigioca_text, (x_rigioca, 620))
+#==================================================
+#LETTERE
+#==================================================
 
-    elif dove_siamo == "lettere":
-        screen.fill((255, 250, 200))
+    elif event.key == pygame.K_i and dove_siamo == "lettere" and not in_gioco_lettere:
+    in_gioco_lettere = True
+    gioco_finito = False
+    tentativi_fatti = 0
+    feedback_dettagliato = ["", "", "", ""]
+    storico_tentativi = []
+    risultato = ""
+    
+    codice_segreto = ""
+    for lettere in range (4):
+        # Genera lettere casuali usando i codici ASCII
+        # 97-122 per minuscole
+        lettere = chr(random.randint(97, 122))
+        codice_segreto += lettere
+    
+    print(f"CODICE SEGRETO: {codice_segreto}")
+    
+    
         
-        titolo_lettere = Titlefont.render("MODALITÀ LETTERE", True, (200, 100, 0))
-        x_titolo = (larghezza_schermo - titolo_lettere.get_width()) // 2
-        screen.blit(titolo_lettere, (x_titolo, 50))
-        
-        testo_1 = Normalfont.render("Qui giocherai con le lettere!", True, (0, 0, 0))
-        testo_2 = Normalfont.render("Il computer penserà a 4 lettere (dalla a alla z)", True, (0, 0, 0))
-        testo_3 = Normalfont.render("Tu dovrai indovinarli in 10 tentativi", True, (0, 0, 0))
-        testo_4 = Normalfont.render("Premi ESC per tornare al menu", True, (200, 0, 0))
-        testo_5 = Normalfont.render("premi I per iniziare", True, (0, 0, 0))
-        
-        screen.blit(testo_1, ((larghezza_schermo - testo_1.get_width()) // 2, 200))
-        screen.blit(testo_2, ((larghezza_schermo - testo_2.get_width()) // 2, 270))
-        screen.blit(testo_3, ((larghezza_schermo - testo_3.get_width()) // 2, 340))
-        screen.blit(testo_4, ((larghezza_schermo - testo_4.get_width()) // 2, 450))
-        screen.blit(testo_5, ((larghezza_schermo - testo_5.get_width()) // 2, 570))
+    
+    
+elif dove_siamo == "lettere":
+    if not in_gioco_lettere and not gioco_finito:
+            
+            screen.fill((255, 250, 200))
+            
+            titolo_lettere = Titlefont.render("MODALITÀ LETTERE", True, (200, 100, 0))
+            x_titolo = (larghezza_schermo - titolo_lettere.get_width()) // 2
+            screen.blit(titolo_lettere, (x_titolo, 50))
+            
+            testi = [
+                "Qui giocherai con le lettere!",
+                "Il computer penserà a 4 lettere (dalla a alla z)",
+                "Tu dovrai indovinarle in 10 tentativi",
+                "Premi I per iniziare a giocare",
+                "Premi ESC per tornare al menu"
+            ]
+            for i, testo in enumerate(testi):
+                testo_render = Normalfont.render(testo, True, (0, 0, 0))
+                x = (larghezza_schermo - testo_render.get_width()) // 2
+                y = 200 + i * 70
+                screen.blit(testo_render, (x, y))
+            
+            elif in_gioco_lettere:
+               screen.fill((210, 200, 240))
+            
+            titolo_gioco = Titlefont.render("GIOCO LETTERE", True, (75, 0, 130))
+            x_titolo = (larghezza_schermo - titolo_gioco.get_width()) // 2
+            screen.blit(titolo_gioco, (x_titolo, 30))
+            
+            #================================================
+            #AREA GIOCO LETTERE PRINCIPALE
+            #================================================
+            
+            tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
+            screen.blit(tentativi_text, (150, 160))
+            
+            input_label = Normalfont.render("Inserisci 4 lettere (a-z):", True, (0, 0, 0))
+            screen.blit(input_label, (150, 230))
+            
+            #definisce le caselle per i tentativi
+            for i in range(4):
+                x = 150 + i * 120
+                y = 300
+                
+                colore_casella = (180, 220, 255) if i < len(tentativo_corrente) else (255, 255, 255)
+                pygame.draw.rect(screen, colore_casella, (x, y, 80, 80), border_radius=10)
+                pygame.draw.rect(screen, (0, 100, 200), (x, y, 80, 80), 3, border_radius=10)
+                
+                if i < len(tentativo_corrente):
+                    num_text = Normalfont.render(tentativo_corrente[i], True, (0, 0, 0))
+                    num_x = x + 40 - num_text.get_width() // 2
+                    num_y = y + 40 - num_text.get_height() // 2
+                    screen.blit(num_text, (num_x, num_y))
+                
+                else:
+                    segnaposto = Fontpiccolo.render(f"Pos {i+1}", True, (100, 100, 100))
+                    segnaposto_x = x + 40 - segnaposto.get_width() // 2
+                    segnaposto_y = y + 40 - segnaposto.get_height() // 2
+                    screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
+                
 
+
+#==================================================
+#COLORI
+#==================================================
     elif dove_siamo == "colori":
         screen.fill((200, 230, 255))
         
