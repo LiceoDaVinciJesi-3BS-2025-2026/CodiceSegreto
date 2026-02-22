@@ -28,6 +28,7 @@ feedback_dettagliato = ["", "", "", ""]
 storico_tentativi = []  # Qui salviamo TUTTI i codici in ordine
 gioco_finito = False
 risultato = ""
+in_gioco_lettere = False
 
 while running:
     for event in pygame.event.get():
@@ -47,6 +48,7 @@ while running:
                 dove_siamo = "colori"
                 print("=== MODALITÀ COLORI ===")
             
+            # tasto I per iniziare numeri
             elif event.key == pygame.K_i and dove_siamo == "numeri" and not in_gioco_numeri:
                 in_gioco_numeri = True
                 gioco_finito = False
@@ -62,15 +64,39 @@ while running:
                     codice_segreto += str(cifra)
                 
                 print(f"CODICE SEGRETO: {codice_segreto}")
-            
+                continue
+                
+            # tasto i per iniziare lettere
+            elif event.key == pygame.K_i and dove_siamo == "lettere" and not in_gioco_lettere:
+                in_gioco_lettere = True
+                gioco_finito = False
+                tentativi_fatti = 0
+                tentativo_corrente = ""
+                feedback_dettagliato = ["", "", "", ""]
+                storico_tentativi = []
+                risultato = ""
+
+                # genera 4 lettere casuali
+                codice_segreto = ""
+                for _ in range(4):
+                    lettera = chr(random.randint(97, 122))
+                    codice_segreto += lettera
+                
+                print(f"CODICE SEGRETO LETTERE: {codice_segreto}")
+                continue
+
             elif event.key == pygame.K_ESCAPE:
-                if in_gioco_numeri or gioco_finito:
+                if in_gioco_numeri or in_gioco_lettere or gioco_finito:
                     in_gioco_numeri = False
+                    in_gioco_lettere = False
                     gioco_finito = False
                 else:
                     dove_siamo = "menu"
                 print("Torno indietro")
-            
+
+            # ==============================================
+            # GESTIONE INPUT NUMERI
+            # ==============================================
             if in_gioco_numeri and not gioco_finito:
                 if pygame.K_1 <= event.key <= pygame.K_6:
                     if len(tentativo_corrente) < 4:
@@ -94,7 +120,7 @@ while running:
                             feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} CORRETTO"
                         else:
                             feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} SBAGLIATO"
-                    
+                            
                     numeri_presenti = []
                     for pos in range(4):
                         if (tentativo_corrente[pos] != codice_segreto[pos] and 
@@ -117,6 +143,59 @@ while running:
                     else:
                         tentativo_corrente = ""
 
+            # ==============================================
+            # GESTIONE INPUT LETTERE
+            # ==============================================
+            if in_gioco_lettere and not gioco_finito:
+                # Solo le lettere A-Z
+                if pygame.K_a <= event.key <= pygame.K_z:
+                    if len(tentativo_corrente) < 4:
+                        lettera = chr(event.key)
+                        tentativo_corrente += lettera
+                
+                elif event.key == pygame.K_BACKSPACE:
+                    tentativo_corrente = tentativo_corrente[:-1]
+                
+                elif event.key == pygame.K_RETURN and len(tentativo_corrente) == 4:
+                    tentativi_fatti += 1
+                    
+                    # SALVA IL TENTATIVO NELLO STORICO
+                    storico_tentativi.append(tentativo_corrente)
+                    
+                    # CALCOLA FEEDBACK DETTAGLIATO
+                    feedback_dettagliato = ["", "", "", ""]
+                    
+                    for pos in range(4):
+                        if tentativo_corrente[pos] == codice_segreto[pos]:
+                            feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} CORRETTO"
+                        else:
+                            feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} SBAGLIATO"
+                    
+                    lettere_presenti = []
+                    for pos in range(4):
+                        if (tentativo_corrente[pos] != codice_segreto[pos] and 
+                            tentativo_corrente[pos] in codice_segreto):
+                            if tentativo_corrente[pos] not in lettere_presenti:
+                                lettere_presenti.append(tentativo_corrente[pos])
+                    
+                    print(f"Tentativo {tentativi_fatti}: {tentativo_corrente}")
+                    
+                    if tentativo_corrente == codice_segreto:
+                        risultato = "VITTORIA"
+                        gioco_finito = True
+                        in_gioco_lettere = False
+                        print(f"HAI VINTO in {tentativi_fatti} tentativi!")
+                    elif tentativi_fatti >= 10:
+                        risultato = "SCONFITTA"
+                        gioco_finito = True
+                        in_gioco_lettere = False
+                        print(f"HAI PERSO! Codice era: {codice_segreto}")
+                    else:
+                        tentativo_corrente = ""
+    #====================================        
+    # DISEGNA SCHERMATE
+    #====================================
+    
     if dove_siamo == "menu":
         screen.fill((255, 182, 193))
         
@@ -131,6 +210,9 @@ while running:
             y = 350 + i * 100
             screen.blit(testo_render, (x, y))
 
+    #====================================        
+    # NUMERI
+    #====================================
     elif dove_siamo == "numeri":
         if not in_gioco_numeri and not gioco_finito:
             screen.fill((230, 220, 250))
@@ -159,10 +241,6 @@ while running:
             titolo_gioco = Titlefont.render("GIOCO NUMERI", True, (75, 0, 130))
             x_titolo = (larghezza_schermo - titolo_gioco.get_width()) // 2
             screen.blit(titolo_gioco, (x_titolo, 30))
-            
-            # ==============================================
-            # AREA GIOCO NUMERI PRINCIPALE
-            # ==============================================
             
             tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
             screen.blit(tentativi_text, (150, 160))
@@ -238,12 +316,14 @@ while running:
             # ==============================================
             # CONSIGLIO
             # ==============================================
-            rettangolo_consiglio = pygame.Rect(150, 440, 380, 200)
+            rettangolo_consiglio = pygame.Rect(150, 440, 380, 180)
             pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
             pygame.draw.rect(screen, (100, 100, 100), rettangolo_consiglio, 3, border_radius=15)
-            
+
+            # tITOLO DEL CONSIGLIO 
             consiglio_titolo = Normalfont.render("CONSIGLIO:", True, (0, 0, 150))
-            screen.blit(consiglio_titolo, (160, 450))
+            x_titolo_consiglio = rettangolo_consiglio.x + (rettangolo_consiglio.width - consiglio_titolo.get_width()) // 2
+            screen.blit(consiglio_titolo, (x_titolo_consiglio, 455))
             
             if tentativi_fatti >= 6:
                 pari = 0
@@ -255,33 +335,30 @@ while running:
                         dispari += 1
                 
                 if pari == 4:
-                    consiglio_testo = "Tutti i numeri sono PARI"
-                    colore_consiglio = (0, 100, 200)
+                    testo_maggioranza = "Tutti i numeri sono PARI"
                 elif dispari == 4:
-                    consiglio_testo = "Tutti i numeri sono DISPARI"
-                    colore_consiglio = (150, 0, 150)
+                    testo_maggioranza = "Tutti i numeri sono DISPARI"
                 elif pari > dispari:
-                    consiglio_testo = "Maggioranza PARI"
-                    colore_consiglio = (0, 150, 0)
+                    testo_maggioranza = "Maggioranza PARI"
                 else:
-                    consiglio_testo = "Maggioranza DISPARI"
-                    colore_consiglio = (200, 100, 0)
+                    testo_maggioranza = "Maggioranza DISPARI"
+                testo_magg_render = Fontpiccolo.render(testo_maggioranza, True, (0, 100, 200))
+                x_magg = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_magg_render.get_width()) // 2
+                screen.blit(testo_magg_render, (x_magg, 500))
                 
-                consiglio_line1 = Fontpiccolo.render(consiglio_testo, True, colore_consiglio)
-                screen.blit(consiglio_line1, (170, 490))
+                # Testo pari (centrato)
+                testo_pari = f"Pari: {pari}"
+                testo_pari_render = Fontpiccolo.render(testo_pari, True, (80, 80, 80))
+                x_pari = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_pari_render.get_width()) // 2
+                screen.blit(testo_pari_render, (x_pari, 540))
                 
-                consigli_dettagli = [
-                    f"Pari: {pari} | Dispari: {dispari}",
-                    "Range: numeri da 1 a 6",
-                    f"Hai {10 - tentativi_fatti} tentativi rimasti"
-                ]
-                
-                y_pos_consigli = 530
-                for dettaglio in consigli_dettagli:
-                    testo_det = Fontpiccolo.render(dettaglio, True, (80, 80, 80))
-                    screen.blit(testo_det, (170, y_pos_consigli))
-                    y_pos_consigli += 30
+                # Testo dispari (centrato)
+                testo_dispari = f"Dispari: {dispari}"
+                testo_dispari_render = Fontpiccolo.render(testo_dispari, True, (80, 80, 80))
+                x_dispari = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_dispari_render.get_width()) // 2
+                screen.blit(testo_dispari_render, (x_dispari, 570))
             else:
+                # Messaggio di attesa (centrato)
                 tentativi_mancanti = 6 - tentativi_fatti
                 
                 if tentativi_mancanti == 1:
@@ -290,7 +367,8 @@ while running:
                     messaggio = f"Disponibile tra {tentativi_mancanti} tentativi"
                 
                 testo_attesa = Fontpiccolo.render(messaggio, True, (150, 150, 150))
-                screen.blit(testo_attesa, (200, 500))
+                x_attesa = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_attesa.get_width()) // 2
+                screen.blit(testo_attesa, (x_attesa, 520))
             
             # ==============================================
             # ISTRUZIONI
@@ -302,7 +380,7 @@ while running:
                 "- INVIO conferma",
                 "- ESC per tornare"
             ]
-            
+
             y_pos = 670
             for testo in istruzioni:
                 colore = (100, 100, 100) if not testo.startswith("ISTRUZIONI") else (0, 0, 0)
@@ -311,6 +389,7 @@ while running:
                 y_pos += 30
         
         elif gioco_finito:
+            # SCHERMATA FINE GIOCO NUMERI
             screen.fill((230, 220, 250))
             
             if risultato == "VITTORIA":
@@ -353,97 +432,235 @@ while running:
             rigioca_text = Normalfont.render("Premi I per rigiocare", True, (0, 0, 0))
             x_rigioca = (larghezza_schermo - rigioca_text.get_width()) // 2
             screen.blit(rigioca_text, (x_rigioca, 620))
-            #==================================================
-            #LETTERE
-            #==================================================
+
+    #==================================================
+    #LETTERE
+    #==================================================
+    elif dove_siamo == "lettere":
+        if not in_gioco_lettere and not gioco_finito:
+            # SCHERMATA ISTRUZIONI LETTERE
+            screen.fill((255, 250, 200))
             
-            elif event.key == pygame.K_i and dove_siamo == "lettere" and not in_gioco_lettere:
-                in_gioco_lettere = True
-                gioco_finito = False
-                tentativi_fatti = 0
-                feedback_dettagliato = ["", "", "", ""]
-                storico_tentativi = []
-                risultato = ""
+            titolo_lettere = Titlefont.render("MODALITÀ LETTERE", True, (200, 100, 0))
+            x_titolo = (larghezza_schermo - titolo_lettere.get_width()) // 2
+            screen.blit(titolo_lettere, (x_titolo, 50))
+            
+            testi = [
+                "Qui giocherai con le lettere!",
+                "Il computer penserà a 4 lettere (dalla a alla z)",
+                "Tu dovrai indovinarle in 10 tentativi",
+                "Premi I per iniziare a giocare",
+                "Premi ESC per tornare al menu"
+            ]
+            
+            for i, testo in enumerate(testi):
+                testo_render = Normalfont.render(testo, True, (0, 0, 0))
+                x = (larghezza_schermo - testo_render.get_width()) // 2
+                y = 200 + i * 70
+                screen.blit(testo_render, (x, y))
+        
+        elif in_gioco_lettere:
+            # SCHERMATA DI GIOCO LETTERE
+            screen.fill((210, 200, 240))
+            
+            titolo_gioco = Titlefont.render("GIOCO LETTERE", True, (75, 0, 130))
+            x_titolo = (larghezza_schermo - titolo_gioco.get_width()) // 2
+            screen.blit(titolo_gioco, (x_titolo, 30))
+            
+            # AREA GIOCO LETTERE PRINCIPALE
+            tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
+            screen.blit(tentativi_text, (150, 160))
+            
+            input_label = Normalfont.render("Inserisci 4 lettere (a-z):", True, (0, 0, 0))
+            screen.blit(input_label, (150, 230))
+            
+            for i in range(4):
+                x = 150 + i * 120
+                y = 300
                 
-                codice_segreto = ""
-                for lettere in range (4):
-                    # Genera lettere casuali usando i codici ASCII
-                    # 97-122 per minuscole
-                    lettere = chr(random.randint(97, 122))
-                    codice_segreto += lettere
+                colore_casella = (180, 220, 255) if i < len(tentativo_corrente) else (255, 255, 255)
+                pygame.draw.rect(screen, colore_casella, (x, y, 80, 80), border_radius=10)
+                pygame.draw.rect(screen, (0, 100, 200), (x, y, 80, 80), 3, border_radius=10)
                 
-                print(f"CODICE SEGRETO: {codice_segreto}")
+                if i < len(tentativo_corrente):
+                    num_text = Normalfont.render(tentativo_corrente[i], True, (0, 0, 0))
+                    num_x = x + 40 - num_text.get_width() // 2
+                    num_y = y + 40 - num_text.get_height() // 2
+                    screen.blit(num_text, (num_x, num_y))
+                else:
+                    segnaposto = Fontpiccolo.render(f"Pos {i+1}", True, (100, 100, 100))
+                    segnaposto_x = x + 40 - segnaposto.get_width() // 2
+                    segnaposto_y = y + 40 - segnaposto.get_height() // 2
+                    screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
+            
+            # SUGGERIMENTI PER LE LETTERE
+            if feedback_dettagliato[0] or storico_tentativi:
+                suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
+                screen.blit(suggerimenti_label, (700, 160))
                 
+                y_pos = 210
+                if feedback_dettagliato[0]:
+                    for i, fb in enumerate(feedback_dettagliato):
+                        if fb:
+                            colore = (0, 150, 0) if "CORRETTO" in fb else (200, 0, 0)
+                            fb_text = Fontpiccolo.render(fb, True, colore)
+                            screen.blit(fb_text, (720, y_pos))
+                            y_pos += 30
                 
+                if storico_tentativi:
+                    ultimo = storico_tentativi[-1]
+                    lettere_presenti = []
+                    for pos in range(4):
+                        if (ultimo[pos] != codice_segreto[pos] and 
+                            ultimo[pos] in codice_segreto):
+                            if ultimo[pos] not in lettere_presenti:
+                                lettere_presenti.append(ultimo[pos])
                     
+                    if lettere_presenti:
+                        presenti_text = f"Presenti: {', '.join(lettere_presenti)}"
+                        presenti_render = Fontpiccolo.render(presenti_text, True, (200, 100, 0))
+                        screen.blit(presenti_render, (720, y_pos))
+                        y_pos += 30
+            
+            # TUTTI I TENTATIVI LETTERE
+            if storico_tentativi:
+                storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
+                screen.blit(storico_label, (700, 370))
                 
+                y_pos = 420
+                for i, codice in enumerate(storico_tentativi):
+                    numero = i + 1
+                    tent_text = Fontpiccolo.render(f"{numero}) {codice}", True, (0, 0, 0))
+                    screen.blit(tent_text, (720, y_pos))
+                    y_pos += 30
+            
+            # ==============================================
+            # CONSIGLIO LETTERE (AGGIUNTO)
+            # ==============================================
+            rettangolo_consiglio = pygame.Rect(150, 440, 380, 200)
+            pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
+            pygame.draw.rect(screen, (100, 100, 100), rettangolo_consiglio, 3, border_radius=15)
+            
+            # Titolo del consiglio (centrato)
+            consiglio_titolo = Normalfont.render("CONSIGLIO:", True, (0, 0, 150))
+            x_titolo_consiglio = rettangolo_consiglio.x + (rettangolo_consiglio.width - consiglio_titolo.get_width()) // 2
+            screen.blit(consiglio_titolo, (x_titolo_consiglio, 455))
+            
+            if tentativi_fatti >= 6:
+                # Analizza il codice per vocali/consonanti
+                vocali = ['a', 'e', 'i', 'o', 'u']
+                conteggio_vocali = 0
+                conteggio_consonanti = 0
                 
-            elif dove_siamo == "lettere":
-                if not in_gioco_lettere and not gioco_finito:
-                        
-                        screen.fill((255, 250, 200))
-                        
-                        titolo_lettere = Titlefont.render("MODALITÀ LETTERE", True, (200, 100, 0))
-                        x_titolo = (larghezza_schermo - titolo_lettere.get_width()) // 2
-                        screen.blit(titolo_lettere, (x_titolo, 50))
-                        
-                        testi = [
-                            "Qui giocherai con le lettere!",
-                            "Il computer penserà a 4 lettere (dalla a alla z)",
-                            "Tu dovrai indovinarle in 10 tentativi",
-                            "Premi I per iniziare a giocare",
-                            "Premi ESC per tornare al menu"
-                        ]
-                    
-                        for i, testo in enumerate(testi):
-                            testo_render = Normalfont.render(testo, True, (0, 0, 0))
-                            x = (larghezza_schermo - testo_render.get_width()) // 2
-                            y = 200 + i * 70
-                            screen.blit(testo_render, (x, y))
-                        
-                    elif in_gioco_lettere:
-                        screen.fill((210, 200, 240))
-                        
-                        titolo_gioco = Titlefont.render("GIOCO LETTERE", True, (75, 0, 130))
-                        x_titolo = (larghezza_schermo - titolo_gioco.get_width()) // 2
-                        screen.blit(titolo_gioco, (x_titolo, 30))
-                
-                #================================================
-                #AREA GIOCO LETTERE PRINCIPALE
-                #================================================
-                
-                tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
-                screen.blit(tentativi_text, (150, 160))
-                
-                input_label = Normalfont.render("Inserisci 4 lettere (a-z):", True, (0, 0, 0))
-                screen.blit(input_label, (150, 230))
-                
-                #definisce le caselle per i tentativi
-                for i in range(4):
-                    x = 150 + i * 120
-                    y = 300
-                    
-                    colore_casella = (180, 220, 255) if i < len(tentativo_corrente) else (255, 255, 255)
-                    pygame.draw.rect(screen, colore_casella, (x, y, 80, 80), border_radius=10)
-                    pygame.draw.rect(screen, (0, 100, 200), (x, y, 80, 80), 3, border_radius=10)
-                    
-                    if i < len(tentativo_corrente):
-                        num_text = Normalfont.render(tentativo_corrente[i], True, (0, 0, 0))
-                        num_x = x + 40 - num_text.get_width() // 2
-                        num_y = y + 40 - num_text.get_height() // 2
-                        screen.blit(num_text, (num_x, num_y))
-                    
+                for lettera in codice_segreto:
+                    if lettera in vocali:
+                        conteggio_vocali += 1
                     else:
-                        segnaposto = Fontpiccolo.render(f"Pos {i+1}", True, (100, 100, 100))
-                        segnaposto_x = x + 40 - segnaposto.get_width() // 2
-                        segnaposto_y = y + 40 - segnaposto.get_height() // 2
-                        screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
+                        conteggio_consonanti += 1
                 
-
-
-#==================================================
-#COLORI
-#==================================================
+                # Testo maggioranza (centrato)
+                if conteggio_vocali == 4:
+                    testo_maggioranza = "Tutte VOCALI"
+                elif conteggio_consonanti == 4:
+                    testo_maggioranza = "Tutte CONSONANTI"
+                elif conteggio_vocali > conteggio_consonanti:
+                    testo_maggioranza = "Maggioranza VOCALI"
+                else:
+                    testo_maggioranza = "Maggioranza CONSONANTI"
+                
+                testo_magg_render = Fontpiccolo.render(testo_maggioranza, True, (150, 0, 150))  # Viola
+                x_magg = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_magg_render.get_width()) // 2
+                screen.blit(testo_magg_render, (x_magg, 500))
+                
+                # Testo vocali (centrato)
+                testo_vocali = f"Vocali: {conteggio_vocali}"
+                testo_vocali_render = Fontpiccolo.render(testo_vocali, True, (80, 80, 80))
+                x_vocali = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_vocali_render.get_width()) // 2
+                screen.blit(testo_vocali_render, (x_vocali, 540))
+                
+                # Testo consonanti (centrato)
+                testo_consonanti = f"Consonanti: {conteggio_consonanti}"
+                testo_consonanti_render = Fontpiccolo.render(testo_consonanti, True, (80, 80, 80))
+                x_consonanti = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_consonanti_render.get_width()) // 2
+                screen.blit(testo_consonanti_render, (x_consonanti, 570))
+            else:
+                # Messaggio di attesa (centrato)
+                tentativi_mancanti = 6 - tentativi_fatti
+                
+                if tentativi_mancanti == 1:
+                    messaggio = f"Disponibile tra 1 tentativo"
+                else:
+                    messaggio = f"Disponibile tra {tentativi_mancanti} tentativi"
+                
+                testo_attesa = Fontpiccolo.render(messaggio, True, (150, 150, 150))
+                x_attesa = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_attesa.get_width()) // 2
+                screen.blit(testo_attesa, (x_attesa, 520))
+            
+            # ISTRUZIONI LETTERE
+            istruzioni = [
+                "ISTRUZIONI:",
+                "- Usa tasti A-Z per inserire lettere",
+                "- BACKSPACE cancella",
+                "- INVIO conferma",
+                "- ESC per tornare"
+            ]
+            
+            y_pos = 670
+            for testo in istruzioni:
+                colore = (100, 100, 100) if not testo.startswith("ISTRUZIONI") else (0, 0, 0)
+                testo_render = Fontpiccolo.render(testo, True, colore)
+                screen.blit(testo_render, (150, y_pos))
+                y_pos += 30
+        
+        elif gioco_finito:
+            # SCHERMATA FINE GIOCO LETTERE
+            screen.fill((255, 250, 200))
+            
+            if risultato == "VITTORIA":
+                titolo_risultato = Titlefont.render("HAI VINTO!", True, (0, 150, 0))
+            else:
+                titolo_risultato = Titlefont.render("HAI PERSO!", True, (200, 0, 0))
+            
+            x_titolo = (larghezza_schermo - titolo_risultato.get_width()) // 2
+            screen.blit(titolo_risultato, (x_titolo, 80))
+            
+            info1 = Normalfont.render(f"Hai fatto {tentativi_fatti} tentativi su 10", True, (0, 0, 0))
+            x_info1 = (larghezza_schermo - info1.get_width()) // 2
+            screen.blit(info1, (x_info1, 200))
+            
+            codice_label = Normalfont.render("Il codice corretto era:", True, (0, 0, 0))
+            x_codice_label = (larghezza_schermo - codice_label.get_width()) // 2
+            screen.blit(codice_label, (x_codice_label, 280))
+            
+            x_inizio_caselle = (larghezza_schermo - (4 * 120)) // 2
+            for i in range(4):
+                x = x_inizio_caselle + i * 120
+                y = 360
+                
+                pygame.draw.rect(screen, (200, 255, 200), (x, y, 80, 80), border_radius=10)
+                pygame.draw.rect(screen, (0, 100, 0), (x, y, 80, 80), 3, border_radius=10)
+                
+                lettera_text = Normalfont.render(codice_segreto[i].upper(), True, (0, 0, 0))
+                lettera_x = x + 40 - lettera_text.get_width() // 2
+                lettera_y = y + 40 - lettera_text.get_height() // 2
+                screen.blit(lettera_text, (lettera_x, lettera_y))
+            
+            codice_testo = Normalfont.render(codice_segreto.upper(), True, (0, 100, 0))
+            x_codice = (larghezza_schermo - codice_testo.get_width()) // 2
+            screen.blit(codice_testo, (x_codice, 460))
+            
+            continua_text = Normalfont.render("Premi ESC per tornare alle istruzioni", True, (0, 0, 0))
+            x_continua = (larghezza_schermo - continua_text.get_width()) // 2
+            screen.blit(continua_text, (x_continua, 550))
+            
+            rigioca_text = Normalfont.render("Premi I per rigiocare", True, (0, 0, 0))
+            x_rigioca = (larghezza_schermo - rigioca_text.get_width()) // 2
+            screen.blit(rigioca_text, (x_rigioca, 620))
+            
+           
+    #==================================================
+    #COLORI
+    #==================================================
     elif dove_siamo == "colori":
         screen.fill((200, 230, 255))
         
