@@ -36,15 +36,15 @@ while running:
             running = False
         
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_n and not in_gioco_numeri and not gioco_finito:
+            if event.key == pygame.K_n and not in_gioco_numeri and not in_gioco_lettere and not gioco_finito:
                 dove_siamo = "numeri"
                 print("=== MODALITÀ NUMERI ===")
             
-            elif event.key == pygame.K_l and not in_gioco_numeri and not gioco_finito:
+            elif event.key == pygame.K_l and not in_gioco_numeri and not in_gioco_lettere and not gioco_finito:
                 dove_siamo = "lettere"
                 print("=== MODALITÀ LETTERE ===")
             
-            elif event.key == pygame.K_c and not in_gioco_numeri and not gioco_finito:
+            elif event.key == pygame.K_c and not in_gioco_numeri and not in_gioco_lettere and not gioco_finito:
                 dove_siamo = "colori"
                 print("=== MODALITÀ COLORI ===")
             
@@ -93,6 +93,57 @@ while running:
                 else:
                     dove_siamo = "menu"
                 print("Torno indietro")
+                continue
+            
+            # ==============================================
+            # GESTIONE TASTI NELLA SCHERMATA DI FINE GIOCO
+            # ==============================================
+            if gioco_finito:
+                if event.key == pygame.K_i:
+                    # Ricomincia nella stessa modalità
+                    if dove_siamo == "numeri":
+                        in_gioco_numeri = True
+                        gioco_finito = False
+                        tentativi_fatti = 0
+                        tentativo_corrente = ""
+                        feedback_dettagliato = ["", "", "", ""]
+                        storico_tentativi = []
+                        risultato = ""
+                        
+                        codice_segreto = ""
+                        for _ in range(4):
+                            cifra = random.randint(1, 6)
+                            codice_segreto += str(cifra)
+                        
+                        print(f"NUOVO CODICE NUMERI: {codice_segreto}")
+                        continue
+                    
+                    elif dove_siamo == "lettere":
+                        in_gioco_lettere = True
+                        gioco_finito = False
+                        tentativi_fatti = 0
+                        tentativo_corrente = ""
+                        feedback_dettagliato = ["", "", "", ""]
+                        storico_tentativi = []
+                        risultato = ""
+                        
+                        codice_segreto = ""
+                        for _ in range(4):
+                            lettera = chr(random.randint(97, 122))
+                            codice_segreto += lettera
+                        
+                        print(f"NUOVO CODICE LETTERE: {codice_segreto}")
+                        continue
+                
+                elif event.key == pygame.K_ESCAPE:
+                    # Torna alle istruzioni della modalità corrente
+                    if dove_siamo == "numeri":
+                        in_gioco_numeri = False
+                    elif dove_siamo == "lettere":
+                        in_gioco_lettere = False
+                    gioco_finito = False
+                    print("Torno alle istruzioni")
+                    continue
 
             # ==============================================
             # GESTIONE INPUT NUMERI
@@ -192,6 +243,7 @@ while running:
                         print(f"HAI PERSO! Codice era: {codice_segreto}")
                     else:
                         tentativo_corrente = ""
+    
     #====================================        
     # DISEGNA SCHERMATE
     #====================================
@@ -303,10 +355,9 @@ while running:
             # ==============================================
             if storico_tentativi:
                 storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
-                screen.blit(storico_label, (700, 370))  # DA 340 A 370 (30 px più in basso)
+                screen.blit(storico_label, (700, 370))
                 
-                y_pos = 420  # DA 390 A 420 (30 px più in basso)
-                # Mostra TUTTI i tentativi fatti finora, in ordine
+                y_pos = 420
                 for i, codice in enumerate(storico_tentativi):
                     numero = i + 1
                     tent_text = Fontpiccolo.render(f"{numero}) {codice}", True, (0, 0, 0))
@@ -320,7 +371,7 @@ while running:
             pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
             pygame.draw.rect(screen, (100, 100, 100), rettangolo_consiglio, 3, border_radius=15)
 
-            # tITOLO DEL CONSIGLIO 
+            # Titolo del consiglio 
             consiglio_titolo = Normalfont.render("CONSIGLIO:", True, (0, 0, 150))
             x_titolo_consiglio = rettangolo_consiglio.x + (rettangolo_consiglio.width - consiglio_titolo.get_width()) // 2
             screen.blit(consiglio_titolo, (x_titolo_consiglio, 455))
@@ -335,13 +386,14 @@ while running:
                         dispari += 1
                 
                 if pari == 4:
-                    testo_maggioranza = "Tutti i numeri sono PARI"
+                    testo_maggioranza = "Tutti PARI"
                 elif dispari == 4:
-                    testo_maggioranza = "Tutti i numeri sono DISPARI"
+                    testo_maggioranza = "Tutti DISPARI"
                 elif pari > dispari:
                     testo_maggioranza = "Maggioranza PARI"
                 else:
                     testo_maggioranza = "Maggioranza DISPARI"
+                    
                 testo_magg_render = Fontpiccolo.render(testo_maggioranza, True, (0, 100, 200))
                 x_magg = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_magg_render.get_width()) // 2
                 screen.blit(testo_magg_render, (x_magg, 500))
@@ -371,7 +423,7 @@ while running:
                 screen.blit(testo_attesa, (x_attesa, 520))
             
             # ==============================================
-            # ISTRUZIONI
+            # ISTRUZIONI NUMERI
             # ==============================================
             istruzioni = [
                 "ISTRUZIONI:",
@@ -434,7 +486,7 @@ while running:
             screen.blit(rigioca_text, (x_rigioca, 620))
 
     #==================================================
-    #LETTERE
+    # LETTERE
     #==================================================
     elif dove_siamo == "lettere":
         if not in_gioco_lettere and not gioco_finito:
@@ -535,7 +587,7 @@ while running:
                     y_pos += 30
             
             # ==============================================
-            # CONSIGLIO LETTERE (AGGIUNTO)
+            # CONSIGLIO LETTERE
             # ==============================================
             rettangolo_consiglio = pygame.Rect(150, 440, 380, 200)
             pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
@@ -568,7 +620,7 @@ while running:
                 else:
                     testo_maggioranza = "Maggioranza CONSONANTI"
                 
-                testo_magg_render = Fontpiccolo.render(testo_maggioranza, True, (150, 0, 150))  # Viola
+                testo_magg_render = Fontpiccolo.render(testo_maggioranza, True, (150, 0, 150))
                 x_magg = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_magg_render.get_width()) // 2
                 screen.blit(testo_magg_render, (x_magg, 500))
                 
@@ -656,8 +708,7 @@ while running:
             rigioca_text = Normalfont.render("Premi I per rigiocare", True, (0, 0, 0))
             x_rigioca = (larghezza_schermo - rigioca_text.get_width()) // 2
             screen.blit(rigioca_text, (x_rigioca, 620))
-            
-           
+    
     #==================================================
     #COLORI
     #==================================================
