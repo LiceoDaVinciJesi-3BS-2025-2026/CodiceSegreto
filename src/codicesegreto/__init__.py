@@ -713,25 +713,69 @@ while running:
     #COLORI
     #==================================================
     elif dove_siamo == "colori":
-        screen.fill((200, 230, 255))
+        if not in_gioco_colori and not gioco_finito:
+            #SCHERMATA INSTRUZIONI COLORI
+            screen.fill((200, 230, 255))
+            
+            titolo_colori = Titlefont.render("MODALITÀ COLORI", True, (0, 0, 150))
+            x_titolo = (larghezza_schermo - titolo_colori.get_width()) // 2
+            screen.blit(titolo_colori, (x_titolo, 50))
+            
+            testi = [
+                "Qui giocherai con i colori!",
+                "Il computer penserà a 4 colori",
+                "I colori possibili sono blu, rosso, arancione, giallo, viola",
+                "Tu dovrai indovinarli in 10 tentativi",
+                "Premi ESC per tornare al menu",
+                "premi I per iniziare"
+            ]
+            for i, testo in enumerate(testi):
+                testo_render = Normalfont.render(testo, True, (0, 0, 0))
+                x = (larghezza_schermo - testo_render.get_width()) // 2
+                y = 200 + i * 70
+                screen.blit(testo_render, (x, y))
         
-        titolo_colori = Titlefont.render("MODALITÀ COLORI", True, (0, 0, 150))
-        x_titolo = (larghezza_schermo - titolo_colori.get_width()) // 2
-        screen.blit(titolo_colori, (x_titolo, 50))
-        
-        testo__1 = Normalfont.render("Qui giocherai con i colori!", True, (0, 0, 0))
-        testo__2 = Normalfont.render("Il computer penserà a 4 colori", True, (0, 0, 0))
-        testo__3 = Normalfont.render("I colori possibili sono blu, rosso, arancione, giallo, viola", True, (0, 0, 0))
-        testo__4 = Normalfont.render("Tu dovrai indovinarli in 10 tentativi", True, (0, 0, 0))
-        testo__5 = Normalfont.render("Premi ESC per tornare al menu", True, (200, 0, 0))
-        testo__6 = Normalfont.render("premi I per iniziare", True, (0, 0, 0))
-        
-        screen.blit(testo__1, ((larghezza_schermo - testo__1.get_width()) // 2, 170))
-        screen.blit(testo__2, ((larghezza_schermo - testo__2.get_width()) // 2, 240))
-        screen.blit(testo__3, ((larghezza_schermo - testo__3.get_width()) // 2, 300))
-        screen.blit(testo__4, ((larghezza_schermo - testo__4.get_width()) // 2, 370))
-        screen.blit(testo__5, ((larghezza_schermo - testo__5.get_width()) // 2, 450))
-        screen.blit(testo__6, ((larghezza_schermo - testo__6.get_width()) // 2, 570))
+        elif in_gioco_numeri:
+            #SCHERMATA DI GIOCO COLORI
+            screen.fill((210, 200, 240))
+            
+            titolo_gioco = Titlefont.render("GIOCO COLORI", True, (75, 0, 130))
+            x_titolo = (larghezza_schermo - titolo_gioco.get_width()) // 2
+            screen.blit(titolo_gioco, (x_titolo, 30))
+            
+            # AREA GIOCO COLORI PRINCIPALE
+            
+            tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
+            screen.blit(tentativi_text, (150, 160))
+            
+            input_label = Normalfont.render("Inserisci 4 colori (1-5 in base alla legenda):", True, (0, 0, 0))
+            screen.blit(input_label, (150, 230))
+            
+            for i in range(4):
+                x = 150 + i * 120
+                y = 300
+                
+                colore_casella = (180, 220, 255) if i < len(tentativo_corrente) else (255, 255, 255)
+                pygame.draw.rect(screen, colore_casella, (x, y, 80, 80), border_radius=10)
+                pygame.draw.rect(screen, (0, 100, 200), (x, y, 80, 80), 3, border_radius=10)
+                
+                if i < len(tentativo_corrente):
+                    num_text = Normalfont.render(tentativo_corrente[i], True, (0, 0, 0))
+                    num_x = x + 40 - num_text.get_width() // 2
+                    num_y = y + 40 - num_text.get_height() // 2
+                    screen.blit(num_text, (num_x, num_y))
+                else:
+                    segnaposto = Fontpiccolo.render(f"Pos {i+1}", True, (100, 100, 100))
+                    segnaposto_x = x + 40 - segnaposto.get_width() // 2
+                    segnaposto_y = y + 40 - segnaposto.get_height() // 2
+                    screen.blit(segnaposto, (segnaposto_x, segnaposto_y)
+
+                 #LEGENDA
+            suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
+            screen.blit(suggerimenti_label, (700, 160))
+                            
+            
+            
     
     pygame.display.flip()
 
