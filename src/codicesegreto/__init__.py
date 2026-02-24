@@ -19,7 +19,7 @@ altezza_schermo = 900
 dove_siamo = "menu"
 running = True
 
-# VARIABILI PER IL GIOCO NUMERI
+# VARIABILI PER IL GIOCO
 in_gioco_numeri = False
 codice_segreto = ""
 tentativo_corrente = ""
@@ -29,6 +29,7 @@ storico_tentativi = []  # Qui salviamo TUTTI i codici in ordine
 gioco_finito = False
 risultato = ""
 in_gioco_lettere = False
+in_gioco_colori = False
 
 while running:
     for event in pygame.event.get():
@@ -724,7 +725,6 @@ while running:
             testi = [
                 "Qui giocherai con i colori!",
                 "Il computer penserà a 4 colori",
-                "I colori possibili sono blu, rosso, arancione, giallo, viola",
                 "Tu dovrai indovinarli in 10 tentativi",
                 "Premi ESC per tornare al menu",
                 "premi I per iniziare"
