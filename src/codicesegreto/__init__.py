@@ -31,21 +31,45 @@ def main() -> None:
     in_gioco_lettere = False
     in_gioco_colori = False
     
+    # LISTA COLORI DISPONIBILI (in RGB) per la modalità colori
+    colori_disponibili = [
+        (255, 0, 0),    # 1 Rosso
+        (255, 255, 0),  # 2 Giallo
+        (0, 0, 255),    # 3 Blu
+        (128, 0, 128),  # 4 Viola
+        (255, 165, 0),  # 5 Arancione
+        (0, 255, 0),    # 6 Verde
+        (255, 255, 255),# 7 Bianco
+        (128, 128, 128),# 8 Grigio
+    ]
+    
+    # NOMI DEI COLORI
+    nomi_colori = {
+        1: "Rosso",
+        2: "Giallo",
+        3: "Blu",
+        4: "Viola",
+        5: "Arancione",
+        6: "Verde",
+        7: "Bianco",
+        8: "Grigio"
+    }
+    
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_n and not in_gioco_numeri and not in_gioco_lettere and not gioco_finito:
+                if event.key == pygame.K_n and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                     dove_siamo = "numeri"
                     print("=== MODALITÀ NUMERI ===")
                 
-                elif event.key == pygame.K_l and not in_gioco_numeri and not in_gioco_lettere and not gioco_finito:
+                elif event.key == pygame.K_l and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                     dove_siamo = "lettere"
                     print("=== MODALITÀ LETTERE ===")
                 
-                elif event.key == pygame.K_c and not in_gioco_numeri and not in_gioco_lettere and not gioco_finito:
+                elif event.key == pygame.K_c and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                     dove_siamo = "colori"
                     print("=== MODALITÀ COLORI ===")
                 
@@ -96,19 +120,20 @@ def main() -> None:
                     storico_tentativi = []
                     risultato = ""
     
-                    # genera 4 "colori" casuali
-                    codice_segreto = ""
+                    # genera 4 numeri casuali da 1 a 8
+                    codice_segreto = []
                     for _ in range(4):
                         colore = random.randint(1, 8)
-                        codice_segreto += colore
+                        codice_segreto.append(colore)
                     
-                    print(f"CODICE SEGRETO LETTERE: {codice_segreto}")
+                    print(f"CODICE SEGRETO COLORI: {codice_segreto}")
                     continue
     
                 elif event.key == pygame.K_ESCAPE:
-                    if in_gioco_numeri or in_gioco_lettere or gioco_finito:
+                    if in_gioco_numeri or in_gioco_lettere or in_gioco_colori or gioco_finito:
                         in_gioco_numeri = False
                         in_gioco_lettere = False
+                        in_gioco_colori = False
                         gioco_finito = False
                     else:
                         dove_siamo = "menu"
@@ -154,6 +179,23 @@ def main() -> None:
                             
                             print(f"NUOVO CODICE LETTERE: {codice_segreto}")
                             continue
+                        
+                        elif dove_siamo == "colori":
+                            in_gioco_colori = True
+                            gioco_finito = False
+                            tentativi_fatti = 0
+                            tentativo_corrente = ""
+                            feedback_dettagliato = ["", "", "", ""]
+                            storico_tentativi = []
+                            risultato = ""
+                            
+                            codice_segreto = []
+                            for _ in range(4):
+                                colore = random.randint(1, 8)
+                                codice_segreto.append(colore)
+                            
+                            print(f"NUOVO CODICE COLORI: {codice_segreto}")
+                            continue
                     
                     elif event.key == pygame.K_ESCAPE:
                         # Torna alle istruzioni della modalità corrente
@@ -161,6 +203,8 @@ def main() -> None:
                             in_gioco_numeri = False
                         elif dove_siamo == "lettere":
                             in_gioco_lettere = False
+                        elif dove_siamo == "colori":
+                            in_gioco_colori = False
                         gioco_finito = False
                         print("Torno alle istruzioni")
                         continue
@@ -260,6 +304,51 @@ def main() -> None:
                             risultato = "SCONFITTA"
                             gioco_finito = True
                             in_gioco_lettere = False
+                            print(f"HAI PERSO! Codice era: {codice_segreto}")
+                        else:
+                            tentativo_corrente = ""
+    
+                # ==============================================
+                # GESTIONE INPUT COLORI
+                # ==============================================
+                if in_gioco_colori and not gioco_finito:
+                    # Usa i tasti 1-8
+                    if pygame.K_1 <= event.key <= pygame.K_8:
+                        if len(tentativo_corrente) < 4:
+                            numero = chr(event.key)
+                            tentativo_corrente += numero
+                    
+                    elif event.key == pygame.K_BACKSPACE:
+                        tentativo_corrente = tentativo_corrente[:-1]
+                    
+                    elif event.key == pygame.K_RETURN and len(tentativo_corrente) == 4:
+                        tentativi_fatti += 1
+                        
+                        # SALVA IL TENTATIVO COME STRINGA DI NUMERI
+                        storico_tentativi.append(tentativo_corrente)
+                        
+                        # CALCOLA FEEDBACK DETTAGLIATO
+                        feedback_dettagliato = ["", "", "", ""]
+                        
+                        for pos in range(4):
+                            if pos < len(tentativo_corrente) and pos < len(codice_segreto):
+                                if int(tentativo_corrente[pos]) == codice_segreto[pos]:
+                                    feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} {nomi_colori[int(tentativo_corrente[pos])]} CORRETTO"
+                                else:
+                                    feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} {nomi_colori[int(tentativo_corrente[pos])]} SBAGLIATO"
+                        
+                        # Controlla vittoria
+                        tentativo_lista = [int(x) for x in tentativo_corrente]
+                        
+                        if tentativo_lista == codice_segreto:
+                            risultato = "VITTORIA"
+                            gioco_finito = True
+                            in_gioco_colori = False
+                            print(f"HAI VINTO in {tentativi_fatti} tentativi!")
+                        elif tentativi_fatti >= 10:
+                            risultato = "SCONFITTA"
+                            gioco_finito = True
+                            in_gioco_colori = False
                             print(f"HAI PERSO! Codice era: {codice_segreto}")
                         else:
                             tentativo_corrente = ""
@@ -732,9 +821,10 @@ def main() -> None:
         #==================================================
         #COLORI
         #==================================================
+        
         elif dove_siamo == "colori":
             if not in_gioco_colori and not gioco_finito:
-                #SCHERMATA INSTRUZIONI COLORI
+                # SCHERMATA ISTRUZIONI COLORI
                 screen.fill((200, 230, 255))
                 
                 titolo_colori = Titlefont.render("MODALITÀ COLORI", True, (0, 0, 150))
@@ -743,11 +833,12 @@ def main() -> None:
                 
                 testi = [
                     "Qui giocherai con i colori!",
-                    "Il computer penserà a 4 colori",
+                    "Il computer penserà a 4 colori (numeri da 1 a 8)",
                     "Tu dovrai indovinarli in 10 tentativi",
-                    "Premi ESC per tornare al menu",
-                    "premi I per iniziare"
+                    "Premi I per iniziare a giocare",
+                    "Premi ESC per tornare al menu"
                 ]
+                
                 for i, testo in enumerate(testi):
                     testo_render = Normalfont.render(testo, True, (0, 0, 0))
                     x = (larghezza_schermo - testo_render.get_width()) // 2
@@ -755,26 +846,32 @@ def main() -> None:
                     screen.blit(testo_render, (x, y))
             
             elif in_gioco_colori:
-                #SCHERMATA DI GIOCO COLORI
+                # SCHERMATA DI GIOCO COLORI
                 screen.fill((210, 200, 240))
                 
                 titolo_gioco = Titlefont.render("GIOCO COLORI", True, (75, 0, 130))
                 x_titolo = (larghezza_schermo - titolo_gioco.get_width()) // 2
                 screen.blit(titolo_gioco, (x_titolo, 30))
                 
-                # AREA GIOCO COLORI PRINCIPALE
-                
+                # AREA GIOCO COLORI PRINCIPALE (spostato più in alto)
                 tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
-                screen.blit(tentativi_text, (150, 160))
+                screen.blit(tentativi_text, (150, 100))  # Da 160 a 100
                 
-                input_label = Normalfont.render("Inserisci 4 colori (1-5 in base alla legenda):", True, (0, 0, 0))
-                screen.blit(input_label, (150, 230))
+                input_label = Normalfont.render("Inserisci 4 numeri (1-8):", True, (0, 0, 0))
+                screen.blit(input_label, (150, 170))  # Da 230 a 170
                 
+                # 4 caselle per il tentativo corrente (spostate più in alto)
                 for i in range(4):
                     x = 150 + i * 120
-                    y = 300
+                    y = 240  # Da 300 a 240
                     
-                    colore_casella = (180, 220, 255) if i < len(tentativo_corrente) else (255, 255, 255)
+                    # Colora la casella in base al numero inserito
+                    colore_casella = (255, 255, 255)
+                    if i < len(tentativo_corrente) and tentativo_corrente[i].isdigit():
+                        indice = int(tentativo_corrente[i]) - 1
+                        if 0 <= indice < len(colori_disponibili):
+                            colore_casella = colori_disponibili[indice]
+                    
                     pygame.draw.rect(screen, colore_casella, (x, y, 80, 80), border_radius=10)
                     pygame.draw.rect(screen, (0, 100, 200), (x, y, 80, 80), 3, border_radius=10)
                     
@@ -788,11 +885,152 @@ def main() -> None:
                         segnaposto_x = x + 40 - segnaposto.get_width() // 2
                         segnaposto_y = y + 40 - segnaposto.get_height() // 2
                         screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
-    
-                     #LEGENDA
-                suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
-                screen.blit(suggerimenti_label, (700, 160))
-                                
+                
+                # ==============================================
+                # SUGGERIMENTI (in alto a destra, spostati più in alto)
+                # ==============================================
+                if feedback_dettagliato[0] or storico_tentativi:
+                    suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
+                    screen.blit(suggerimenti_label, (700, 100))  # Da 160 a 100
+                    
+                    y_pos = 150  # Da 210 a 150
+                    if feedback_dettagliato[0]:
+                        for i, fb in enumerate(feedback_dettagliato):
+                            if fb:
+                                colore = (0, 150, 0) if "CORRETTO" in fb else (200, 0, 0)
+                                fb_text = Fontpiccolo.render(fb, True, colore)
+                                screen.blit(fb_text, (720, y_pos))
+                                y_pos += 30
+                    
+                    if storico_tentativi:
+                        ultimo = storico_tentativi[-1]
+                        numeri_presenti = []
+                        for pos in range(4):
+                            if pos < len(ultimo) and pos < len(codice_segreto):
+                                if int(ultimo[pos]) != codice_segreto[pos] and int(ultimo[pos]) in codice_segreto:
+                                    if ultimo[pos] not in numeri_presenti:
+                                        numeri_presenti.append(ultimo[pos])
+                        
+                        if numeri_presenti:
+                            presenti_text = f"Presenti: {', '.join(numeri_presenti)}"
+                            presenti_render = Fontpiccolo.render(presenti_text, True, (200, 100, 0))
+                            screen.blit(presenti_render, (720, y_pos))
+                            y_pos += 30
+                
+                # ==============================================
+                # LEGENDA COLORI (spostata più in basso rispetto alla scritta)
+                # ==============================================
+                legenda_y = 350  # Posizione della scritta "LEGENDA COLORI"
+                legenda_label = Normalfont.render("LEGENDA COLORI:", True, (0, 0, 150))
+                screen.blit(legenda_label, (150, legenda_y))
+                
+                # Mostra i colori su 2 righe da 4 con numero accanto (più vicini tra loro)
+                for i in range(8):
+                    riga = i // 4
+                    colonna = i % 4
+                    x = 170 + colonna * 120  # Ridotto da 220 a 120 per avvicinarli
+                    y = legenda_y + 50 + riga * 45  # Più in basso rispetto alla scritta (+50)
+                    
+                    # Cerchio colorato
+                    pygame.draw.circle(screen, colori_disponibili[i], (x, y), 15)
+                    pygame.draw.circle(screen, (0, 0, 0), (x, y), 15, 1)
+                    
+                    # Numero accanto
+                    num_leg = Fontpiccolo.render(str(i+1), True, (0, 0, 0))
+                    screen.blit(num_leg, (x + 20, y - 8))
+                
+                # ==============================================
+                # ISTRUZIONI (sotto la legenda)
+                # ==============================================
+                istruzioni_y = legenda_y + 160  # Più in basso per lasciare spazio ai colori
+                istruzioni = [
+                    "ISTRUZIONI:",
+                    "- Usa tasti 1-8 per scegliere colori",
+                    "- BACKSPACE cancella",
+                    "- INVIO conferma",
+                    "- ESC per tornare"
+                ]
+                
+                for i, testo in enumerate(istruzioni):
+                    colore = (100, 100, 100) if not testo.startswith("ISTRUZIONI") else (0, 0, 0)
+                    testo_render = Fontpiccolo.render(testo, True, colore)
+                    screen.blit(testo_render, (150, istruzioni_y + i * 30))
+                
+                # ==============================================
+                # TENTATIVI (a destra, sotto i suggerimenti)
+                # ==============================================
+                if storico_tentativi:
+                    storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
+                    screen.blit(storico_label, (700, 250))  # Da 300 a 250 (più in alto)
+                    
+                    y_pos = 300  # Da 350 a 300
+                    # Mostra tutti i tentativi (massimo 8 per spazio)
+                    inizio = max(0, len(storico_tentativi) - 8)
+                    for i in range(inizio, len(storico_tentativi)):
+                        numero = i + 1
+                        codice = storico_tentativi[i]
+                        
+                        num_tent = Fontpiccolo.render(f"{numero})", True, (0, 0, 0))
+                        screen.blit(num_tent, (700, y_pos))
+                        
+                        for j in range(4):
+                            if j < len(codice) and codice[j].isdigit():
+                                indice = int(codice[j]) - 1
+                                if 0 <= indice < len(colori_disponibili):
+                                    x_cerchio = 750 + j * 35
+                                    pygame.draw.circle(screen, colori_disponibili[indice], (x_cerchio, y_pos + 8), 10)
+                                    pygame.draw.circle(screen, (0, 0, 0), (x_cerchio, y_pos + 8), 10, 1)
+                        
+                        y_pos += 40
+            
+            elif gioco_finito:
+                # SCHERMATA FINE GIOCO COLORI
+                screen.fill((200, 230, 255))
+                
+                if risultato == "VITTORIA":
+                    titolo_risultato = Titlefont.render("HAI VINTO!", True, (0, 150, 0))
+                else:
+                    titolo_risultato = Titlefont.render("HAI PERSO!", True, (200, 0, 0))
+                
+                x_titolo = (larghezza_schermo - titolo_risultato.get_width()) // 2
+                screen.blit(titolo_risultato, (x_titolo, 80))
+                
+                info1 = Normalfont.render(f"Hai fatto {tentativi_fatti} tentativi su 10", True, (0, 0, 0))
+                x_info1 = (larghezza_schermo - info1.get_width()) // 2
+                screen.blit(info1, (x_info1, 200))
+                
+                codice_label = Normalfont.render("Il codice corretto era:", True, (0, 0, 0))
+                x_codice_label = (larghezza_schermo - codice_label.get_width()) // 2
+                screen.blit(codice_label, (x_codice_label, 280))
+                
+                x_inizio = (larghezza_schermo - (4 * 120)) // 2
+                for i in range(4):
+                    x = x_inizio + i * 120
+                    y = 360
+                    
+                    if i < len(codice_segreto):
+                        indice = codice_segreto[i] - 1
+                        colore = colori_disponibili[indice]
+                        
+                        pygame.draw.circle(screen, colore, (x + 40, y + 40), 35)
+                        pygame.draw.circle(screen, (0, 0, 0), (x + 40, y + 40), 35, 3)
+                        
+                        num_text = Normalfont.render(str(codice_segreto[i]), True, (0, 0, 0))
+                        num_x = x + 40 - num_text.get_width() // 2
+                        num_y = y + 40 - num_text.get_height() // 2
+                        screen.blit(num_text, (num_x, num_y))
+                
+                codice_testo = Normalfont.render(f"{codice_segreto}", True, (0, 100, 0))
+                x_codice = (larghezza_schermo - codice_testo.get_width()) // 2
+                screen.blit(codice_testo, (x_codice, 480))
+                
+                continua_text = Normalfont.render("Premi ESC per tornare alle istruzioni", True, (0, 0, 0))
+                x_continua = (larghezza_schermo - continua_text.get_width()) // 2
+                screen.blit(continua_text, (x_continua, 580))
+                
+                rigioca_text = Normalfont.render("Premi I per rigiocare", True, (0, 0, 0))
+                x_rigioca = (larghezza_schermo - rigioca_text.get_width()) // 2
+                screen.blit(rigioca_text, (x_rigioca, 650))
                 
         pygame.display.flip()
     
@@ -800,5 +1038,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
