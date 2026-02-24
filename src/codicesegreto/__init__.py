@@ -354,7 +354,7 @@ def main() -> None:
                             tentativo_corrente = ""
         
         #====================================        
-        # DISEGNA SCHERMATE
+        # DISEGNA SCHERMATA PRINCIPALE
         #====================================
         
         if dove_siamo == "menu":
@@ -370,10 +370,15 @@ def main() -> None:
                 x = (larghezza_schermo - testo_render.get_width()) // 2
                 y = 350 + i * 100
                 screen.blit(testo_render, (x, y))
+
+    
     
         #====================================        
+        #____________________________________
         # NUMERI
+        #____________________________________
         #====================================
+        
         elif dove_siamo == "numeri":
             if not in_gioco_numeri and not gioco_finito:
                 screen.fill((230, 220, 250))
@@ -431,6 +436,7 @@ def main() -> None:
                 # ==============================================
                 # SUGGERIMENTI
                 # ==============================================
+                
                 if feedback_dettagliato[0] or storico_tentativi:
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
                     screen.blit(suggerimenti_label, (700, 160))
@@ -653,8 +659,11 @@ def main() -> None:
                         segnaposto_x = x + 40 - segnaposto.get_width() // 2
                         segnaposto_y = y + 40 - segnaposto.get_height() // 2
                         screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
-                
+                        
+                #-----------------------------------------
                 # SUGGERIMENTI PER LE LETTERE
+                #-----------------------------------------
+                
                 if feedback_dettagliato[0] or storico_tentativi:
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
                     screen.blit(suggerimenti_label, (700, 160))
@@ -698,6 +707,7 @@ def main() -> None:
                 # ==============================================
                 # CONSIGLIO LETTERE
                 # ==============================================
+                
                 rettangolo_consiglio = pygame.Rect(150, 440, 380, 200)
                 pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
                 pygame.draw.rect(screen, (100, 100, 100), rettangolo_consiglio, 3, border_radius=15)
@@ -891,7 +901,7 @@ def main() -> None:
                 # ==============================================
                 if feedback_dettagliato[0] or storico_tentativi:
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
-                    screen.blit(suggerimenti_label, (700, 100))  # Da 160 a 100
+                    screen.blit(suggerimenti_label, (700, 160))  # Da 160 a 100
                     
                     y_pos = 150  # Da 210 a 150
                     if feedback_dettagliato[0]:
@@ -918,7 +928,7 @@ def main() -> None:
                             y_pos += 30
                 
                 # ==============================================
-                # LEGENDA COLORI (spostata più in basso rispetto alla scritta)
+                # LEGENDA COLORI
                 # ==============================================
                 legenda_y = 350  # Posizione della scritta "LEGENDA COLORI"
                 legenda_label = Normalfont.render("LEGENDA COLORI:", True, (0, 0, 150))
@@ -928,8 +938,8 @@ def main() -> None:
                 for i in range(8):
                     riga = i // 4
                     colonna = i % 4
-                    x = 170 + colonna * 120  # Ridotto da 220 a 120 per avvicinarli
-                    y = legenda_y + 50 + riga * 45  # Più in basso rispetto alla scritta (+50)
+                    x = 170 + colonna * 120  
+                    y = legenda_y + 50 + riga * 45 
                     
                     # Cerchio colorato
                     pygame.draw.circle(screen, colori_disponibili[i], (x, y), 15)
@@ -961,7 +971,7 @@ def main() -> None:
                 # ==============================================
                 if storico_tentativi:
                     storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
-                    screen.blit(storico_label, (700, 250))  # Da 300 a 250 (più in alto)
+                    screen.blit(storico_label, (700, 370))
                     
                     y_pos = 300  # Da 350 a 300
                     # Mostra tutti i tentativi (massimo 8 per spazio)
