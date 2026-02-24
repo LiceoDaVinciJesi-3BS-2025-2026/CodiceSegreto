@@ -754,7 +754,7 @@ def main() -> None:
                     y = 200 + i * 70
                     screen.blit(testo_render, (x, y))
             
-            elif in_gioco_numeri:
+            elif in_gioco_colori:
                 #SCHERMATA DI GIOCO COLORI
                 screen.fill((210, 200, 240))
                 
@@ -798,6 +798,7 @@ def main() -> None:
     
     pygame.quit()
 
-    if __name__ == "__main__":
-        import doctest
-        doctest.testmod()
+if __name__ == "__main__":
+    main()
+
+
