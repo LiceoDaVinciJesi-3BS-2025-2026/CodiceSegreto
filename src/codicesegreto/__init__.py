@@ -460,7 +460,7 @@ def main() -> None:
                             y_pos += 30
                 
                 # ==============================================
-                # TUTTI I TENTATIVI (in ordine 1), 2), 3)...) - PIÙ IN BASSO
+                # TUTTI I TENTATIVI
                 # ==============================================
                 if storico_tentativi:
                     storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
@@ -550,7 +550,9 @@ def main() -> None:
                     y_pos += 30
             
             elif gioco_finito:
+                #---------------
                 # SCHERMATA FINE GIOCO NUMERI
+                #---------------
                 screen.fill((230, 220, 250))
                 
                 if risultato == "VITTORIA":
@@ -571,7 +573,7 @@ def main() -> None:
                 
                 x_inizio_caselle = (larghezza_schermo - (4 * 120)) // 2
                 for i in range(4):
-                    x = x_inizio_caselle + i * 120
+                    x = x_inizio_caselle + i * 130
                     y = 360
                     
                     pygame.draw.rect(screen, (200, 255, 200), (x, y, 80, 80), border_radius=10)
@@ -582,9 +584,7 @@ def main() -> None:
                     num_y = y + 40 - num_text.get_height() // 2
                     screen.blit(num_text, (num_x, num_y))
                 
-                codice_testo = Normalfont.render(f"{codice_segreto}", True, (0, 100, 0))
-                x_codice = (larghezza_schermo - codice_testo.get_width()) // 2
-                screen.blit(codice_testo, (x_codice, 460))
+
                 
                 continua_text = Normalfont.render("Premi ESC per tornare alle istruzioni", True, (0, 0, 0))
                 x_continua = (larghezza_schermo - continua_text.get_width()) // 2
@@ -756,8 +756,9 @@ def main() -> None:
                     testo_attesa = Fontpiccolo.render(messaggio, True, (150, 150, 150))
                     x_attesa = rettangolo_consiglio.x + (rettangolo_consiglio.width - testo_attesa.get_width()) // 2
                     screen.blit(testo_attesa, (x_attesa, 520))
-                
+                #-----------------------
                 # ISTRUZIONI LETTERE
+                #----------------------
                 istruzioni = [
                     "ISTRUZIONI:",
                     "- Usa tasti A-Z per inserire lettere",
@@ -774,7 +775,9 @@ def main() -> None:
                     y_pos += 30
             
             elif gioco_finito:
+                #------------------------------------
                 # SCHERMATA FINE GIOCO LETTERE
+                #------------------------------------
                 screen.fill((255, 250, 200))
                 
                 if risultato == "VITTORIA":
@@ -795,7 +798,7 @@ def main() -> None:
                 
                 x_inizio_caselle = (larghezza_schermo - (4 * 120)) // 2
                 for i in range(4):
-                    x = x_inizio_caselle + i * 120
+                    x = x_inizio_caselle + i * 130
                     y = 360
                     
                     pygame.draw.rect(screen, (200, 255, 200), (x, y, 80, 80), border_radius=10)
@@ -806,9 +809,7 @@ def main() -> None:
                     lettera_y = y + 40 - lettera_text.get_height() // 2
                     screen.blit(lettera_text, (lettera_x, lettera_y))
                 
-                codice_testo = Normalfont.render(codice_segreto.upper(), True, (0, 100, 0))
-                x_codice = (larghezza_schermo - codice_testo.get_width()) // 2
-                screen.blit(codice_testo, (x_codice, 460))
+        
                 
                 continua_text = Normalfont.render("Premi ESC per tornare alle istruzioni", True, (0, 0, 0))
                 x_continua = (larghezza_schermo - continua_text.get_width()) // 2
@@ -821,12 +822,12 @@ def main() -> None:
         #==================================================
         #COLORI
         #==================================================
-                #==================================================
-        #COLORI
-        #==================================================
+        
         elif dove_siamo == "colori":
             if not in_gioco_colori and not gioco_finito:
+                #--------------------------------
                 # SCHERMATA ISTRUZIONI COLORI
+                #--------------------------------
                 screen.fill((200, 230, 255))
                 
                 titolo_colori = Titlefont.render("MODALITÀ COLORI", True, (0, 0, 150))
@@ -848,7 +849,9 @@ def main() -> None:
                     screen.blit(testo_render, (x, y))
             
             elif in_gioco_colori:
+                #----------------------------
                 # SCHERMATA DI GIOCO COLORI
+                #----------------------------
                 screen.fill((210, 200, 240))
                 
                 titolo_gioco = Titlefont.render("GIOCO COLORI", True, (75, 0, 130))
@@ -856,7 +859,7 @@ def main() -> None:
                 screen.blit(titolo_gioco, (x_titolo, 30))
                 
                 # ==============================================
-                # AREA GIOCO PRINCIPALE (come numeri e lettere)
+                # AREA GIOCO PRINCIPALE COLORI
                 # ==============================================
                 tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
                 screen.blit(tentativi_text, (150, 160))
@@ -970,7 +973,7 @@ def main() -> None:
                         y_pos += 35
                 
                 # ==============================================
-                # ISTRUZIONI (leggermente più in basso)
+                # ISTRUZIONI
                 # ==============================================
                 istruzioni = [
                     "ISTRUZIONI:",
@@ -1007,7 +1010,7 @@ def main() -> None:
                 x_codice_label = (larghezza_schermo - codice_label.get_width()) // 2
                 screen.blit(codice_label, (x_codice_label, 280))
                 
-                x_inizio = (larghezza_schermo - (4 * 120)) // 2
+                x_inizio = (larghezza_schermo - (4 * 115)) // 2
                 for i in range(4):
                     x = x_inizio + i * 120
                     y = 360
@@ -1024,10 +1027,7 @@ def main() -> None:
                         num_y = y + 40 - num_text.get_height() // 2
                         screen.blit(num_text, (num_x, num_y))
                 
-                codice_testo = Normalfont.render(f"{codice_segreto}", True, (0, 100, 0))
-                x_codice = (larghezza_schermo - codice_testo.get_width()) // 2
-                screen.blit(codice_testo, (x_codice, 480))
-                
+                                
                 continua_text = Normalfont.render("Premi ESC per tornare alle istruzioni", True, (0, 0, 0))
                 x_continua = (larghezza_schermo - continua_text.get_width()) // 2
                 screen.blit(continua_text, (x_continua, 580))
