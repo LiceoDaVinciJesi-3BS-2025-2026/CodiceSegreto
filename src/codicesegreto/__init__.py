@@ -891,9 +891,9 @@ def main() -> None:
                         screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
                 
                 # ==============================================
-                # LEGENDA COLORI (più staccata dalla scritta)
+                # LEGENDA COLORI
                 # ==============================================
-                legenda_y = 380  # Posizione della scritta "LEGENDA COLORI"
+                legenda_y = 450 # Posizione della scritta "LEGENDA COLORI"
                 legenda_label = Normalfont.render("LEGENDA COLORI:", True, (0, 0, 150))
                 screen.blit(legenda_label, (150, legenda_y))
                 
@@ -902,7 +902,7 @@ def main() -> None:
                     riga = i // 4
                     colonna = i % 4
                     x = 170 + colonna * 130
-                    y = legenda_y + 70 + riga * 45  # Aumentato da +50 a +70
+                    y = legenda_y + 85 + riga * 45  # Aumentato da +50 a +70
                     
                     # Cerchio colorato
                     pygame.draw.circle(screen, colori_disponibili[i], (x, y), 15)
@@ -944,7 +944,7 @@ def main() -> None:
                             y_pos += 30
                 
                 # ==============================================
-                # TENTATIVI (più in basso per non sovrapporsi)
+                # TENTATIVI
                 # ==============================================
                 if storico_tentativi:
                     storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
@@ -952,8 +952,7 @@ def main() -> None:
                     
                     y_pos = 450  # Spostato da 420 a 450
                     # Mostra tutti i tentativi (massimo 7 per spazio)
-                    inizio = max(0, len(storico_tentativi) - 7)
-                    for i in range(inizio, len(storico_tentativi)):
+                    for i in range(len(storico_tentativi)):
                         numero = i + 1
                         codice = storico_tentativi[i]
                         
@@ -965,8 +964,8 @@ def main() -> None:
                                 indice = int(codice[j]) - 1
                                 if 0 <= indice < len(colori_disponibili):
                                     x_cerchio = 750 + j * 35
-                                    pygame.draw.circle(screen, colori_disponibili[indice], (x_cerchio, y_pos + 8), 10)
-                                    pygame.draw.circle(screen, (0, 0, 0), (x_cerchio, y_pos + 8), 10, 1)
+                                    pygame.draw.circle(screen, colori_disponibili[indice], (x_cerchio, y_pos + 20), 10) #colore dei cerchi
+                                    pygame.draw.circle(screen, (0, 0, 0), (x_cerchio, y_pos + 20), 10, 1) #bordo dei cerchi
                         
                         y_pos += 35
                 
@@ -1043,3 +1042,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
