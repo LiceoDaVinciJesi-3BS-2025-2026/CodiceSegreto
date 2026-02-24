@@ -86,6 +86,25 @@ while running:
                 print(f"CODICE SEGRETO LETTERE: {codice_segreto}")
                 continue
 
+            # tasto i per iniziare colori
+            elif event.key == pygame.K_i and dove_siamo == "colori" and not in_gioco_colori:
+                in_gioco_colori = True
+                gioco_finito = False
+                tentativi_fatti = 0
+                tentativo_corrente = ""
+                feedback_dettagliato = ["", "", "", ""]
+                storico_tentativi = []
+                risultato = ""
+
+                # genera 4 "colori" casuali
+                codice_segreto = ""
+                for _ in range(4):
+                    colore = random.randint(1, 8)
+                    codice_segreto += colore
+                
+                print(f"CODICE SEGRETO LETTERE: {codice_segreto}")
+                continue
+
             elif event.key == pygame.K_ESCAPE:
                 if in_gioco_numeri or in_gioco_lettere or gioco_finito:
                     in_gioco_numeri = False
