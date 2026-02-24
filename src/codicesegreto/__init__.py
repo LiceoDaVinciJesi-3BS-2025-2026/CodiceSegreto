@@ -768,7 +768,7 @@ while running:
                     segnaposto = Fontpiccolo.render(f"Pos {i+1}", True, (100, 100, 100))
                     segnaposto_x = x + 40 - segnaposto.get_width() // 2
                     segnaposto_y = y + 40 - segnaposto.get_height() // 2
-                    screen.blit(segnaposto, (segnaposto_x, segnaposto_y)
+                    screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
 
                  #LEGENDA
             suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
