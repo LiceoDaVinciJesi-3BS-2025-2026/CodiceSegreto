@@ -354,7 +354,7 @@ def main() -> None:
                             tentativo_corrente = ""
         
         #====================================        
-        # DISEGNA SCHERMATA PRINCIPALE
+        # DISEGNA SCHERMATE
         #====================================
         
         if dove_siamo == "menu":
@@ -370,15 +370,10 @@ def main() -> None:
                 x = (larghezza_schermo - testo_render.get_width()) // 2
                 y = 350 + i * 100
                 screen.blit(testo_render, (x, y))
-
-    
     
         #====================================        
-        #____________________________________
         # NUMERI
-        #____________________________________
         #====================================
-        
         elif dove_siamo == "numeri":
             if not in_gioco_numeri and not gioco_finito:
                 screen.fill((230, 220, 250))
@@ -436,7 +431,6 @@ def main() -> None:
                 # ==============================================
                 # SUGGERIMENTI
                 # ==============================================
-                
                 if feedback_dettagliato[0] or storico_tentativi:
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
                     screen.blit(suggerimenti_label, (700, 160))
@@ -659,11 +653,8 @@ def main() -> None:
                         segnaposto_x = x + 40 - segnaposto.get_width() // 2
                         segnaposto_y = y + 40 - segnaposto.get_height() // 2
                         screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
-                        
-                #-----------------------------------------
-                # SUGGERIMENTI PER LE LETTERE
-                #-----------------------------------------
                 
+                # SUGGERIMENTI PER LE LETTERE
                 if feedback_dettagliato[0] or storico_tentativi:
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
                     screen.blit(suggerimenti_label, (700, 160))
@@ -707,7 +698,6 @@ def main() -> None:
                 # ==============================================
                 # CONSIGLIO LETTERE
                 # ==============================================
-                
                 rettangolo_consiglio = pygame.Rect(150, 440, 380, 200)
                 pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
                 pygame.draw.rect(screen, (100, 100, 100), rettangolo_consiglio, 3, border_radius=15)
@@ -831,7 +821,9 @@ def main() -> None:
         #==================================================
         #COLORI
         #==================================================
-        
+                #==================================================
+        #COLORI
+        #==================================================
         elif dove_siamo == "colori":
             if not in_gioco_colori and not gioco_finito:
                 # SCHERMATA ISTRUZIONI COLORI
@@ -863,17 +855,19 @@ def main() -> None:
                 x_titolo = (larghezza_schermo - titolo_gioco.get_width()) // 2
                 screen.blit(titolo_gioco, (x_titolo, 30))
                 
-                # AREA GIOCO COLORI PRINCIPALE (spostato più in alto)
+                # ==============================================
+                # AREA GIOCO PRINCIPALE (come numeri e lettere)
+                # ==============================================
                 tentativi_text = Normalfont.render(f"Tentativo: {tentativi_fatti}/10", True, (0, 0, 0))
-                screen.blit(tentativi_text, (150, 100))  # Da 160 a 100
+                screen.blit(tentativi_text, (150, 160))
                 
                 input_label = Normalfont.render("Inserisci 4 numeri (1-8):", True, (0, 0, 0))
-                screen.blit(input_label, (150, 170))  # Da 230 a 170
+                screen.blit(input_label, (150, 230))
                 
-                # 4 caselle per il tentativo corrente (spostate più in alto)
+                # 4 caselle per il tentativo corrente
                 for i in range(4):
                     x = 150 + i * 120
-                    y = 240  # Da 300 a 240
+                    y = 300
                     
                     # Colora la casella in base al numero inserito
                     colore_casella = (255, 255, 255)
@@ -897,13 +891,35 @@ def main() -> None:
                         screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
                 
                 # ==============================================
-                # SUGGERIMENTI (in alto a destra, spostati più in alto)
+                # LEGENDA COLORI (più staccata dalla scritta)
+                # ==============================================
+                legenda_y = 380  # Posizione della scritta "LEGENDA COLORI"
+                legenda_label = Normalfont.render("LEGENDA COLORI:", True, (0, 0, 150))
+                screen.blit(legenda_label, (150, legenda_y))
+                
+                # Mostra i colori su 2 righe da 4 - PIÙ IN BASSO (legenda_y + 70 invece di +50)
+                for i in range(8):
+                    riga = i // 4
+                    colonna = i % 4
+                    x = 170 + colonna * 130
+                    y = legenda_y + 70 + riga * 45  # Aumentato da +50 a +70
+                    
+                    # Cerchio colorato
+                    pygame.draw.circle(screen, colori_disponibili[i], (x, y), 15)
+                    pygame.draw.circle(screen, (0, 0, 0), (x, y), 15, 1)
+                    
+                    # Numero accanto
+                    num_leg = Fontpiccolo.render(str(i+1), True, (0, 0, 0))
+                    screen.blit(num_leg, (x + 20, y - 8))
+                
+                # ==============================================
+                # SUGGERIMENTI (come numeri e lettere)
                 # ==============================================
                 if feedback_dettagliato[0] or storico_tentativi:
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
-                    screen.blit(suggerimenti_label, (700, 160))  # Da 160 a 100
+                    screen.blit(suggerimenti_label, (700, 160))
                     
-                    y_pos = 150  # Da 210 a 150
+                    y_pos = 210
                     if feedback_dettagliato[0]:
                         for i, fb in enumerate(feedback_dettagliato):
                             if fb:
@@ -928,54 +944,15 @@ def main() -> None:
                             y_pos += 30
                 
                 # ==============================================
-                # LEGENDA COLORI
-                # ==============================================
-                legenda_y = 350  # Posizione della scritta "LEGENDA COLORI"
-                legenda_label = Normalfont.render("LEGENDA COLORI:", True, (0, 0, 150))
-                screen.blit(legenda_label, (150, legenda_y))
-                
-                # Mostra i colori su 2 righe da 4 con numero accanto (più vicini tra loro)
-                for i in range(8):
-                    riga = i // 4
-                    colonna = i % 4
-                    x = 170 + colonna * 120  
-                    y = legenda_y + 50 + riga * 45 
-                    
-                    # Cerchio colorato
-                    pygame.draw.circle(screen, colori_disponibili[i], (x, y), 15)
-                    pygame.draw.circle(screen, (0, 0, 0), (x, y), 15, 1)
-                    
-                    # Numero accanto
-                    num_leg = Fontpiccolo.render(str(i+1), True, (0, 0, 0))
-                    screen.blit(num_leg, (x + 20, y - 8))
-                
-                # ==============================================
-                # ISTRUZIONI (sotto la legenda)
-                # ==============================================
-                istruzioni_y = legenda_y + 160  # Più in basso per lasciare spazio ai colori
-                istruzioni = [
-                    "ISTRUZIONI:",
-                    "- Usa tasti 1-8 per scegliere colori",
-                    "- BACKSPACE cancella",
-                    "- INVIO conferma",
-                    "- ESC per tornare"
-                ]
-                
-                for i, testo in enumerate(istruzioni):
-                    colore = (100, 100, 100) if not testo.startswith("ISTRUZIONI") else (0, 0, 0)
-                    testo_render = Fontpiccolo.render(testo, True, colore)
-                    screen.blit(testo_render, (150, istruzioni_y + i * 30))
-                
-                # ==============================================
-                # TENTATIVI (a destra, sotto i suggerimenti)
+                # TENTATIVI (più in basso per non sovrapporsi)
                 # ==============================================
                 if storico_tentativi:
                     storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
-                    screen.blit(storico_label, (700, 370))
+                    screen.blit(storico_label, (700, 400))  # Spostato da 370 a 400
                     
-                    y_pos = 300  # Da 350 a 300
-                    # Mostra tutti i tentativi (massimo 8 per spazio)
-                    inizio = max(0, len(storico_tentativi) - 8)
+                    y_pos = 450  # Spostato da 420 a 450
+                    # Mostra tutti i tentativi (massimo 7 per spazio)
+                    inizio = max(0, len(storico_tentativi) - 7)
                     for i in range(inizio, len(storico_tentativi)):
                         numero = i + 1
                         codice = storico_tentativi[i]
@@ -991,7 +968,25 @@ def main() -> None:
                                     pygame.draw.circle(screen, colori_disponibili[indice], (x_cerchio, y_pos + 8), 10)
                                     pygame.draw.circle(screen, (0, 0, 0), (x_cerchio, y_pos + 8), 10, 1)
                         
-                        y_pos += 40
+                        y_pos += 35
+                
+                # ==============================================
+                # ISTRUZIONI (leggermente più in basso)
+                # ==============================================
+                istruzioni = [
+                    "ISTRUZIONI:",
+                    "- Usa tasti 1-8 per scegliere colori",
+                    "- BACKSPACE cancella",
+                    "- INVIO conferma",
+                    "- ESC per tornare"
+                ]
+                
+                y_pos = 680  # Spostato da 670 a 680
+                for testo in istruzioni:
+                    colore = (100, 100, 100) if not testo.startswith("ISTRUZIONI") else (0, 0, 0)
+                    testo_render = Fontpiccolo.render(testo, True, colore)
+                    screen.blit(testo_render, (150, y_pos))
+                    y_pos += 30
             
             elif gioco_finito:
                 # SCHERMATA FINE GIOCO COLORI
