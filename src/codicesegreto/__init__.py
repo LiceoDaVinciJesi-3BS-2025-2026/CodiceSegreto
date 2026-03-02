@@ -35,17 +35,18 @@ def main() -> None:
     larghezza_schermo = 1200
     altezza_schermo = 900
     
-    # VARIABILI DI STATO (NUOVE)
+    # VARIABILI DI STATO
     stato = "login"  # "login" o "menu" o "gioco"
     dove_siamo = "menu"
     running = True
     
-    # VARIABILI PER IL GIOCATORE (NUOVE)
+    # VARIABILI PER IL GIOCATORE
     giocatori = carica_giocatori()
     nome_giocatore = ""
     input_testo = ""
     
-    # VARIABILI PER IL GIOCO (tue, invariate)
+    # VARIABILI PER IL GIOCO
+    
     in_gioco_numeri = False
     codice_segreto = ""
     tentativo_corrente = ""
@@ -92,7 +93,7 @@ def main() -> None:
             
             elif event.type == pygame.KEYDOWN:
                 # ==============================================
-                # STATO LOGIN (NUOVO)
+                # STATO LOGIN - inserimento nome
                 # ==============================================
                 if stato == "login":
                     if event.key == pygame.K_RETURN and input_testo:
@@ -115,27 +116,31 @@ def main() -> None:
                     elif event.key <= 127 and event.unicode.isprintable():
                         if len(input_testo) < 15:
                             input_testo += event.unicode
-                
-                # ==============================================
-                # STATO MENU (con piccola modifica per ESC)
-                # ==============================================
+
+                #========================================
+                #STATO MENU
+                #========================================
+                    
                 elif stato == "menu":
-                    # I tuoi controlli originali, ma con stato="gioco" invece di cambiare dove_siamo e basta
+                    #schermata numeri
                     if event.key == pygame.K_n and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "numeri"
                         stato = "gioco"
                         print("=== MODALITÀ NUMERI ===")
-                    
+                        
+                    #schermata lettere
                     elif event.key == pygame.K_l and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "lettere"
                         stato = "gioco"
                         print("=== MODALITÀ LETTERE ===")
-                    
+                        
+                    #schermata colori
                     elif event.key == pygame.K_c and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "colori"
                         stato = "gioco"
                         print("=== MODALITÀ COLORI ===")
-                    
+
+                    #schermata login
                     elif event.key == pygame.K_ESCAPE:
                         stato = "login"
                         input_testo = ""
@@ -143,10 +148,14 @@ def main() -> None:
                         continue
                 
                 # ==============================================
-                # STATO GIOCO (tutto il TUO codice, leggermente adattato per ESC)
+                # STATO GIOCO
                 # ==============================================
                 elif stato == "gioco":
-                    # I tuoi controlli originali, ma con gestione ESC che torna al menu
+
+                    #=============================
+                    # A COSA SERVE????
+                    #=============================
+                    
                     if event.key == pygame.K_n and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "numeri"
                         print("=== MODALITÀ NUMERI ===")
@@ -168,7 +177,8 @@ def main() -> None:
                         feedback_dettagliato = ["", "", "", ""]
                         storico_tentativi = []
                         risultato = ""
-                        
+
+                        #genera CODICE SEGRETO per i numeri
                         codice_segreto = ""
                         for cifre in range(4):
                             cifra = random.randint(1, 6)
@@ -187,7 +197,7 @@ def main() -> None:
                         storico_tentativi = []
                         risultato = ""
         
-                        # genera 4 lettere casuali
+                        # genera CODICE SEGRETO per le lettere
                         codice_segreto = ""
                         for _ in range(4):
                             lettera = chr(random.randint(97, 122))
@@ -207,6 +217,7 @@ def main() -> None:
                         risultato = ""
         
                         # genera 4 numeri casuali da 1 a 8
+                        #CODICE SERETO per i colori
                         codice_segreto = []
                         for _ in range(4):
                             colore = random.randint(1, 8)
@@ -248,7 +259,7 @@ def main() -> None:
                                 for _ in range(4):
                                     cifra = random.randint(1, 6)
                                     codice_segreto += str(cifra)
-                                
+                                #PERCHE DEVE SCRIVERLO??
                                 print(f"NUOVO CODICE NUMERI: {codice_segreto}")
                                 continue
                             
@@ -265,7 +276,7 @@ def main() -> None:
                                 for _ in range(4):
                                     lettera = chr(random.randint(97, 122))
                                     codice_segreto += lettera
-                                
+                                #PERCHE DEVE SCRIVERLO??
                                 print(f"NUOVO CODICE LETTERE: {codice_segreto}")
                                 continue
                             
@@ -282,7 +293,7 @@ def main() -> None:
                                 for _ in range(4):
                                     colore = random.randint(1, 8)
                                     codice_segreto.append(colore)
-                                
+                                #PERCHE DEVE SCRIVERLO??
                                 print(f"NUOVO CODICE COLORI: {codice_segreto}")
                                 continue
                         
@@ -301,8 +312,9 @@ def main() -> None:
                             continue
         
                     # ==============================================
-                    # GESTIONE INPUT NUMERI (TUO CODICE, INVARIATO)
+                    # GESTIONE INPUT NUMERI
                     # ==============================================
+                    
                     if in_gioco_numeri and not gioco_finito:
                         if pygame.K_1 <= event.key <= pygame.K_6:
                             if len(tentativo_corrente) < 4:
@@ -318,7 +330,7 @@ def main() -> None:
                             # SALVA IL TENTATIVO NELLO STORICO
                             storico_tentativi.append(tentativo_corrente)
                             
-                            # CALCOLA FEEDBACK DETTAGLIATO
+                            # CALCOLA FEEDBACK DETTAGLIATO (??)
                             feedback_dettagliato = ["", "", "", ""]
                             
                             for pos in range(4):
