@@ -4,7 +4,7 @@ import json
 import os
 
 # ==============================================
-# FUNZIONI DI SALVATAGGIO
+# FUNZIONI DI SALVATAGGIO NOME
 # ==============================================
 FILE_GIOCATORI = "giocatori.json"
 
@@ -52,7 +52,7 @@ def main() -> None:
     tentativo_corrente = ""
     tentativi_fatti = 0
     feedback_dettagliato = ["", "", "", ""]
-    storico_tentativi = []  # Qui salviamo TUTTI i codici in ordine
+    storico_tentativi = []  # Qui salviamo TUTTI i tentativi in ordine
     gioco_finito = False
     risultato = ""
     in_gioco_lettere = False
@@ -103,7 +103,7 @@ def main() -> None:
                             print(f"Bentornato {nome_giocatore}!")
                         else:
                             giocatori[nome_giocatore] = {"nome": nome_giocatore}
-                            print(f"Benvenuto {nome_giocatore}!")
+                            (f"Benvenuto {nome_giocatore}!")
                         
                         stato = "menu"
                         dove_siamo = "menu"
@@ -126,49 +126,42 @@ def main() -> None:
                     if event.key == pygame.K_n and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "numeri"
                         stato = "gioco"
-                        print("=== MODALITÀ NUMERI ===")
                         
                     #schermata lettere
                     elif event.key == pygame.K_l and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "lettere"
                         stato = "gioco"
-                        print("=== MODALITÀ LETTERE ===")
                         
                     #schermata colori
                     elif event.key == pygame.K_c and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "colori"
                         stato = "gioco"
-                        print("=== MODALITÀ COLORI ===")
-
+ 
                     #schermata login
                     elif event.key == pygame.K_ESCAPE:
                         stato = "login"
                         input_testo = ""
-                        print("Torna al login")
+                        
                         continue
                 
                 # ==============================================
                 # STATO GIOCO
                 # ==============================================
                 elif stato == "gioco":
-
-                    #=============================
-                    # A COSA SERVE????
-                    #=============================
-                    
+            #gestione tasti per entrare nelle modalità
                     if event.key == pygame.K_n and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "numeri"
-                        print("=== MODALITÀ NUMERI ===")
+                        
                     
                     elif event.key == pygame.K_l and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "lettere"
-                        print("=== MODALITÀ LETTERE ===")
+                        
                     
                     elif event.key == pygame.K_c and not in_gioco_numeri and not in_gioco_lettere and not in_gioco_colori and not gioco_finito:
                         dove_siamo = "colori"
-                        print("=== MODALITÀ COLORI ===")
-                    
-                    # tasto I per iniziare numeri
+                        
+#                     
+                    # tasto I per iniziare NUMERI
                     elif event.key == pygame.K_i and dove_siamo == "numeri" and not in_gioco_numeri:
                         in_gioco_numeri = True
                         gioco_finito = False
@@ -183,11 +176,10 @@ def main() -> None:
                         for cifre in range(4):
                             cifra = random.randint(1, 6)
                             codice_segreto += str(cifra)
-                        
-                        print(f"CODICE SEGRETO: {codice_segreto}")
+                       
                         continue
                         
-                    # tasto i per iniziare lettere
+                    # tasto i per iniziare LETTERE
                     elif event.key == pygame.K_i and dove_siamo == "lettere" and not in_gioco_lettere:
                         in_gioco_lettere = True
                         gioco_finito = False
@@ -203,10 +195,9 @@ def main() -> None:
                             lettera = chr(random.randint(97, 122))
                             codice_segreto += lettera
                         
-                        print(f"CODICE SEGRETO LETTERE: {codice_segreto}")
                         continue
         
-                    # tasto i per iniziare colori
+                    # tasto i per iniziare COLORI
                     elif event.key == pygame.K_i and dove_siamo == "colori" and not in_gioco_colori:
                         in_gioco_colori = True
                         gioco_finito = False
@@ -222,10 +213,9 @@ def main() -> None:
                         for _ in range(4):
                             colore = random.randint(1, 8)
                             codice_segreto.append(colore)
-                        
-                        print(f"CODICE SEGRETO COLORI: {codice_segreto}")
+                       
                         continue
-        
+        #gestione tasto ESC per tornare al menu
                     elif event.key == pygame.K_ESCAPE:
                         if in_gioco_numeri or in_gioco_lettere or in_gioco_colori or gioco_finito:
                             in_gioco_numeri = False
@@ -259,8 +249,7 @@ def main() -> None:
                                 for _ in range(4):
                                     cifra = random.randint(1, 6)
                                     codice_segreto += str(cifra)
-                                #PERCHE DEVE SCRIVERLO??
-                                print(f"NUOVO CODICE NUMERI: {codice_segreto}")
+                               
                                 continue
                             
                             elif dove_siamo == "lettere":
@@ -276,8 +265,7 @@ def main() -> None:
                                 for _ in range(4):
                                     lettera = chr(random.randint(97, 122))
                                     codice_segreto += lettera
-                                #PERCHE DEVE SCRIVERLO??
-                                print(f"NUOVO CODICE LETTERE: {codice_segreto}")
+                              
                                 continue
                             
                             elif dove_siamo == "colori":
@@ -293,8 +281,7 @@ def main() -> None:
                                 for _ in range(4):
                                     colore = random.randint(1, 8)
                                     codice_segreto.append(colore)
-                                #PERCHE DEVE SCRIVERLO??
-                                print(f"NUOVO CODICE COLORI: {codice_segreto}")
+                               
                                 continue
                         
                         elif event.key == pygame.K_ESCAPE:
@@ -308,7 +295,7 @@ def main() -> None:
                             gioco_finito = False
                             stato = "menu"
                             dove_siamo = "menu"
-                            print("Torno al menu")
+                            
                             continue
         
                     # ==============================================
@@ -350,7 +337,6 @@ def main() -> None:
                                     if tentativo_corrente[pos] not in numeri_presenti:
                                         numeri_presenti.append(tentativo_corrente[pos])
                             
-                            print(f"Tentativo {tentativi_fatti}: {tentativo_corrente}")
 
                             #condizione della vittoria
                             if tentativo_corrente == codice_segreto:
@@ -371,6 +357,7 @@ def main() -> None:
                     # ==============================================
                     # GESTIONE INPUT LETTERE
                     # ==============================================
+                    
                     if in_gioco_lettere and not gioco_finito:
                         #inserimento lettere dalla A alla Z
                         if pygame.K_a <= event.key <= pygame.K_z:
@@ -405,7 +392,6 @@ def main() -> None:
                                     if tentativo_corrente[pos] not in lettere_presenti:
                                         lettere_presenti.append(tentativo_corrente[pos])
                             
-                            print(f"Tentativo {tentativi_fatti}: {tentativo_corrente}")
                             
                             if tentativo_corrente == codice_segreto:
                                 risultato = "VITTORIA"
@@ -423,8 +409,9 @@ def main() -> None:
                     # ==============================================
                     # GESTIONE INPUT COLORI
                     # ==============================================
+                    
                     if in_gioco_colori and not gioco_finito:
-                        # Usa i tasti 1-8
+                        # inserimento di numeri 1-8
                         if pygame.K_1 <= event.key <= pygame.K_8:
                             if len(tentativo_corrente) < 4:
                                 numero = chr(event.key)
@@ -483,12 +470,12 @@ def main() -> None:
             x_sotto = (larghezza_schermo - sottotitolo.get_width()) // 2
             screen.blit(sottotitolo, (x_sotto, 320))
             
-            # Riquadro per il nome (più grande)
+            # Riquadro per il nome 
             rect_nome = pygame.Rect(350, 380, 500, 70)
             pygame.draw.rect(screen, (255, 255, 255), rect_nome, border_radius=10)
             pygame.draw.rect(screen, (0, 0, 0), rect_nome, 3, border_radius=10)
             
-            # Testo inserito (centrato)
+            # Testo inserito 
             testo_render = Normalfont.render(input_testo, True, (0, 0, 0))
             testo_x = rect_nome.x + (rect_nome.width - testo_render.get_width()) // 2
             testo_y = rect_nome.y + (rect_nome.height - testo_render.get_height()) // 2
@@ -535,6 +522,7 @@ def main() -> None:
             # NUMERI
             #====================================
             if dove_siamo == "numeri":
+                #schermata di instruzioni NUMERI
                 if not in_gioco_numeri and not gioco_finito:
                     screen.fill((230, 220, 250))
                     
@@ -557,6 +545,7 @@ def main() -> None:
                         screen.blit(testo_render, (x, y))
                 
                 elif in_gioco_numeri:
+                    #schermata di gioco NUMERI
                     screen.fill((210, 200, 240))
                     
                     titolo_gioco = Titlefont.render("GIOCO NUMERI", True, (75, 0, 130))
@@ -589,7 +578,7 @@ def main() -> None:
                             screen.blit(segnaposto, (segnaposto_x, segnaposto_y))
                     
                     # ==============================================
-                    # SUGGERIMENTI
+                    # SUGGERIMENTI NUMERI
                     # ==============================================
                     if feedback_dettagliato[0] or storico_tentativi:
                         suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
@@ -620,7 +609,7 @@ def main() -> None:
                                 y_pos += 30
                     
                     # ==============================================
-                    # TUTTI I TENTATIVI
+                    # TUTTI I TENTATIVI NUMERI
                     # ==============================================
                     if storico_tentativi:
                         storico_label = Normalfont.render("TENTATIVI:", True, (0, 0, 150))
@@ -634,7 +623,7 @@ def main() -> None:
                             y_pos += 30
                     
                     # ==============================================
-                    # CONSIGLIO
+                    # CONSIGLIO NUMERI
                     # ==============================================
                     rettangolo_consiglio = pygame.Rect(150, 440, 380, 180)
                     pygame.draw.rect(screen, (255, 255, 240), rettangolo_consiglio, border_radius=15)
