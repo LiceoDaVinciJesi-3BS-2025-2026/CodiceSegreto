@@ -745,7 +745,7 @@ def main() -> None:
             # CAMPO 1: NOME E COGNOME
             # ==============================================
             label1 = Normalfont.render("Nome e Cognome:", True, (0, 0, 0))
-            screen.blit(label1, (300, 250))
+            screen.blit(label1, (300, 245))
             
             # Riquadro per il campo 1 (Rect: x, y, larghezza, altezza)
             rect1 = pygame.Rect(300, 300, 600, 60)
@@ -836,17 +836,11 @@ def main() -> None:
                 nome_text = Fontpiccolo.render(f"Utente: {giocatore_corrente['nome_utente']}", True, (0, 0, 0))
                 screen.blit(nome_text, (850, 40))
                 
-                # Nome completo e anno
-                nome_completo_text = Fontpiccolo.render(
-                    f"{giocatore_corrente['nome_completo']} ({giocatore_corrente['anno']})",True, (0, 0, 0)) 
-                    
-                screen.blit(nome_completo_text, (850, 70))
-                
                 # Stella con numero (allineata sotto le scritte)
                 stelle_totali = giocatore_corrente['stelle']
-                disegna_stella(screen, (255, 215, 0), 850, 120, 20)
-                testo_stelle = Fontpiccolo.render(str(stelle_totali), True, (255, 215, 0))
-                screen.blit(testo_stelle, (880, 110))
+                disegna_stella(screen, (255, 215, 0), 865, 120, 20)
+                testo_stelle = Fontpiccolo.render(str(stelle_totali), True, (255, 220, 0))
+                screen.blit(testo_stelle, (890, 110))
             
             # Titolo del gioco centrato
             Titolo = Titlefont.render("CodiceSegreto", True, (0, 0, 0))
@@ -930,22 +924,16 @@ def main() -> None:
                 # Mostra i dati del giocatore corrente se esiste
                 if giocatore_corrente:
                     # Nome utente (nickname) a (1000, 40)
-                    nome_text = Fontpiccolo.render(f"{giocatore_corrente['nome_utente']}", True, (0, 0, 0))
+                    nome_text = Fontpiccolo.render(f"Utente: {giocatore_corrente['nome_utente']}", True, (0, 0, 0))
                     screen.blit(nome_text, (1000, 40))
-                    
-                    # Nome completo a (1000, 70) - sotto il nome utente
-                    nome_completo_text = Fontpiccolo.render(
-                        f"{giocatore_corrente['nome_completo']}", True, (0, 0, 0)
-                    )
-                    screen.blit(nome_completo_text, (1000, 70))
                     
                     # Stella con numero di vittorie
                     stelle_totali = giocatore_corrente['stelle']
-                    # Disegna una stella dorata centrata a (1000, 120) di dimensione 20
-                    disegna_stella(screen, (255, 215, 0), 1000, 120, 20)
+                    # Disegna una stella dorata centrata a (1024, 110) di dimensione 20
+                    disegna_stella(screen, (255, 215, 0), 1024, 110, 20)
                     # Mostra il numero di stelle accanto alla stella
                     testo_stelle = Fontpiccolo.render(str(stelle_totali), True, (255, 215, 0))
-                    screen.blit(testo_stelle, (1030, 110))
+                    screen.blit(testo_stelle, (1060, 100))
                 
                 # ==============================================
                 # AREA DI GIOCO PRINCIPALE
@@ -1199,7 +1187,7 @@ def main() -> None:
         # ==============================================
         # STATO GIOCO - LETTERE (simile a numeri)
         # ==============================================
-                # ==============================================
+        # ==============================================
         # STATO GIOCO - LETTERE
         # ==============================================
         # Questo blocco viene eseguito solo quando siamo nello stato "gioco" 
@@ -1260,7 +1248,7 @@ def main() -> None:
                 # ==============================================
                 if giocatore_corrente:
                     # Nome utente (nickname)
-                    nome_text = Fontpiccolo.render(f"{giocatore_corrente['nome_utente']}", True, (0, 0, 0))
+                    nome_text = Fontpiccolo.render(f"Utente: {giocatore_corrente['nome_utente']}", True, (0, 0, 0))
                     screen.blit(nome_text, (1000, 40))
                     
                     # Nome completo
@@ -1271,9 +1259,10 @@ def main() -> None:
                     
                     # Stella con numero di vittorie
                     stelle_totali = giocatore_corrente['stelle']
-                    disegna_stella(screen, (255, 215, 0), 1000, 120, 20)
+                    disegna_stella(screen, (255, 215, 0), 1024, 110, 20)
+                    # Mostra il numero di stelle accanto alla stella
                     testo_stelle = Fontpiccolo.render(str(stelle_totali), True, (255, 215, 0))
-                    screen.blit(testo_stelle, (1030, 110))
+                    screen.blit(testo_stelle, (1060, 100))
                 
                 # ==============================================
                 # AREA DI GIOCO PRINCIPALE
@@ -1511,9 +1500,7 @@ def main() -> None:
         # ==============================================
         # STATO GIOCO - COLORI
         # ==============================================
-                # ==============================================
-        # STATO GIOCO - COLORI
-        # ==============================================
+            
         # Questo blocco viene eseguito solo quando siamo nello stato "gioco" 
         # e abbiamo scelto la modalità "colori"
         elif stato == "gioco" and dove_siamo == "colori":
@@ -1572,20 +1559,16 @@ def main() -> None:
                 # ==============================================
                 if giocatore_corrente:
                     # Nome utente (nickname)
-                    nome_text = Fontpiccolo.render(f"{giocatore_corrente['nome_utente']}", True, (0, 0, 0))
+                    nome_text = Fontpiccolo.render(f"Utente: {giocatore_corrente['nome_utente']}", True, (0, 0, 0))
                     screen.blit(nome_text, (1000, 40))
                     
-                    # Nome completo
-                    nome_completo_text = Fontpiccolo.render(
-                        f"{giocatore_corrente['nome_completo']}", True, (0, 0, 0)
-                    )
-                    screen.blit(nome_completo_text, (1000, 70))
                     
                     # Stella con numero di vittorie
                     stelle_totali = giocatore_corrente['stelle']
-                    disegna_stella(screen, (255, 215, 0), 1000, 120, 20)
+                    disegna_stella(screen, (255, 215, 0), 1024, 110, 20)
+                    # Mostra il numero di stelle accanto alla stella
                     testo_stelle = Fontpiccolo.render(str(stelle_totali), True, (255, 215, 0))
-                    screen.blit(testo_stelle, (1030, 110))
+                    screen.blit(testo_stelle, (1060, 100))
                 
                 # ==============================================
                 # AREA DI GIOCO PRINCIPALE
@@ -1820,3 +1803,4 @@ def main() -> None:
 # (non se viene importato come modulo)
 if __name__ == "__main__":
     main()
+
