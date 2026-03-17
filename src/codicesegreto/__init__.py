@@ -1188,9 +1188,6 @@ def main() -> None:
                 screen.blit(rigioca_text, (x_rigioca, 620))
         
         # ==============================================
-        # STATO GIOCO - LETTERE (simile a numeri)
-        # ==============================================
-        # ==============================================
         # STATO GIOCO - LETTERE
         # ==============================================
         # Questo blocco viene eseguito solo quando siamo nello stato "gioco" 
@@ -1262,10 +1259,10 @@ def main() -> None:
                     
                     # Stella con numero di vittorie
                     stelle_totali = giocatore_corrente['stelle']
-                    disegna_stella(screen, (255, 215, 0), 1024, 110, 20)
+                    disegna_stella(screen, (255, 230, 0), 1024, 110, 20)
                     # Mostra il numero di stelle accanto alla stella
                     testo_stelle = Fontpiccolo.render(str(stelle_totali), True, (255, 215, 0))
-                    screen.blit(testo_stelle, (1060, 100))
+                    screen.blit(testo_stelle, (1060, 115))
                 
                 # ==============================================
                 # AREA DI GIOCO PRINCIPALE
