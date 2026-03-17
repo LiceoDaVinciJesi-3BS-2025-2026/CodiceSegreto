@@ -1,8 +1,11 @@
-import pygame  # Libreria per creare giochi 2D
-import random  # Libreria per generare numeri casuali
-import json    # Libreria per salvare/caricare dati in formato JSON
-import os      # Libreria per interagire con il sistema operativo (file)
+#import libreria standard
 import math    # Libreria per operazioni matematiche (usata per la stella)
+import random  # Libreria per generare numeri casuali
+import json    # Libreria per salvare/esportare dati sotto forma di testo
+import os      # Libreria per interagire con il file della lista dei dati dei giocatori
+
+#import librerie pip
+import pygame  # Libreria per creare giochi 2D
 
 # ==============================================
 # FUNZIONI DI SALVATAGGIO
