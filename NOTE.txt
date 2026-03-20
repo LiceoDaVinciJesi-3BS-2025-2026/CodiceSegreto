@@ -1,0 +1,9 @@
+- il gioco è carino, ma LETTERE, NUMERI, COLORI non sono in ordine di difficoltà (numeri, colori, lettere)
+
+- la schermata iniziale NON mi convince.
+
+- salvataggio file OK... ma DOVE lo salvi??
+
+- un solo file con poche funzioni. main molto importante ---> difficile
+
+- codice ben commentato
