@@ -8,6 +8,7 @@ by Piergiovanni e Silvi.
 <img width="1194" height="931" alt="screen_schermataColori" src="https://github.com/user-attachments/assets/ad9f9ab8-b43d-467d-bcb5-a04b1509f083" />
 <hr>
 Per la realizzazione di questo codice abbiamo collaborato nella maggior parte dei passaggi, consultando l'intelligenza artificiale "DeepSeek. Per prima cosa abbiamo scelto il gioco a cui volevamo inspirarci. In seguito abbiamo definito le tre modalità di gioco e abbiamo iniziato a riflettere sul come scriverle sul codice, usando alcune funzioni che già conoscevamo, ad esempio la libreria random. Per far sì che il nostro codice funzionasse al meglio abbiamo consultato "DeepSeek", che ci ha suggerito delle funzioni e dei procedimenti che non conoscevamo ad esempio la libreri json e os. Durante tutta la scrittura del codice ci siamo confrontate sul come procedere accordandoci sulle parti da svolgere. In particolare ci siamo mosse in questo modo:
+<hr>
 - Giulia ha svolto la parte relativa ai numeri  
 - Giorgia ha svolto la parte riferita alle lettere  
 - In classe insieme hanno sistemato le eventuali mancanze  
