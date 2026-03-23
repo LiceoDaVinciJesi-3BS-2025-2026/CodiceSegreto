@@ -1,3 +1,12 @@
+# CodiceSegreto - codice principale.
+# 
+# License: See LICENSE file in the project root for details.
+# 
+# Authors: 
+# Giorgia Silvi giorgiasilvi4@gmail.com
+# Giulia Piergiovanni giuliapiergiovanni2009@gmail.com
+
+
 #import libreria standard
 import math    # Libreria per operazioni matematiche (usata per la stella)
 import random  # Libreria per generare numeri casuali
