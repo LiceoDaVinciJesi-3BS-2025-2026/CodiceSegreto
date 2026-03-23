@@ -1,8 +1,5 @@
-# CodiceSegreto
-#Ciao a tutti
+# CodiceSegreto  
+**indovina il codice nascosto**  
+*Inspirato da "Mastermind", con più livelli di difficoltà,* **mettiti alla prova!**  
+by Piergiovanni e Silvi.
 
-**grassetto**
-
-##buongiorno  
-*sto facendo una prova  
-ciao
