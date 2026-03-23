@@ -1246,11 +1246,6 @@ def main() -> None:
                     nome_text = Fontpiccolo.render(f"Utente: {giocatore_corrente['nome_utente']}", True, (0, 0, 0))
                     screen.blit(nome_text, (1000, 40))
                     
-                    # Nome completo
-                    nome_completo_text = Fontpiccolo.render(
-                        f"{giocatore_corrente['nome_completo']}", True, (0, 0, 0)
-                    )
-                    screen.blit(nome_completo_text, (1000, 70))
                     
                     # Stella con numero di vittorie
                     stelle_totali = giocatore_corrente['stelle']
@@ -1798,5 +1793,3 @@ def main() -> None:
 # (non se viene importato come modulo)
 if __name__ == "__main__":
     main()
-
-
