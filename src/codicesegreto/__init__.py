@@ -415,7 +415,6 @@ def main() -> None:
                         for _ in range(4):
                             cifra = random.randint(1, 6)
                             codice_segreto += str(cifra)  # Converte in stringa e concatena
-                        print(f"CODICE SEGRETO NUMERI: {codice_segreto}")
                         continue
                     
                     # Tasto I per iniziare una partita a LETTERE
@@ -435,7 +434,6 @@ def main() -> None:
                             # 97 = 'a', 122 = 'z'
                             lettera = chr(random.randint(97, 122))
                             codice_segreto += lettera
-                        print(f"CODICE SEGRETO LETTERE: {codice_segreto}")
                         continue
                     
                     # Tasto I per iniziare una partita a COLORI
@@ -453,7 +451,6 @@ def main() -> None:
                         for _ in range(4):
                             colore = random.randint(1, 8)
                             codice_segreto.append(colore)  # Aggiunge alla lista
-                        print(f"CODICE SEGRETO COLORI: {codice_segreto}")
                         continue
                     
                     # Tasto ESC per tornare al menu
@@ -491,7 +488,6 @@ def main() -> None:
                                 for _ in range(4):
                                     cifra = random.randint(1, 6)
                                     codice_segreto += str(cifra)
-                                print(f"NUOVO CODICE NUMERI: {codice_segreto}")
                                 continue
                             
                             elif dove_siamo == "lettere":
@@ -507,7 +503,6 @@ def main() -> None:
                                 for _ in range(4):
                                     lettera = chr(random.randint(97, 122))
                                     codice_segreto += lettera
-                                print(f"NUOVO CODICE LETTERE: {codice_segreto}")
                                 continue
                             
                             elif dove_siamo == "colori":
@@ -523,7 +518,7 @@ def main() -> None:
                                 for _ in range(4):
                                     colore = random.randint(1, 8)
                                     codice_segreto.append(colore)
-                                print(f"NUOVO CODICE COLORI: {codice_segreto}")
+                                
                                 continue
                         
                         # Tasto ESC per tornare alle istruzioni
@@ -1803,4 +1798,5 @@ def main() -> None:
 # (non se viene importato come modulo)
 if __name__ == "__main__":
     main()
+
 
