@@ -846,7 +846,7 @@ def main() -> None:
             screen.blit(Titolo, (x_titolo, 180))
             
             # Opzioni di gioco (centrate verticalmente)
-            opzioni = ["Lettere (L)", "Numeri (N)", "Colori (C)"]
+            opzioni = ["Numeri (N)", "Colori (C)", "Lettere (L)"]
             for i, testo in enumerate(opzioni):
                 testo_render = Normalfont.render(testo, True, (0, 0, 0))
                 x = (larghezza_schermo - testo_render.get_width()) // 2
@@ -1793,3 +1793,5 @@ def main() -> None:
 # (non se viene importato come modulo)
 if __name__ == "__main__":
     main()
+
+
