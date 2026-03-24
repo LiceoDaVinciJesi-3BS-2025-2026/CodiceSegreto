@@ -15,12 +15,14 @@ import os      # Libreria per interagire con il file della lista dei dati dei gi
 
 #import librerie pip
 import pygame  # Libreria per creare giochi 2D
+from platformdirs import PlatformDirs
 
 # ==============================================
 # FUNZIONI DI SALVATAGGIO
 # ==============================================
 # Nome del file dove salviamo i dati dei giocatori
-FILE_GIOCATORI = "giocatori.json"  
+dirs = PlatformDirs("codicesegreto", ensure_exists=True)
+FILE_GIOCATORI = dirs.user_data_dir + "/giocatori.json"  
 
 def carica_giocatori():
     """Carica i dati dei giocatori dal file JSON e aggiorna i vecchi profili"""
