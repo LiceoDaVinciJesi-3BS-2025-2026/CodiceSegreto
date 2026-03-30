@@ -817,6 +817,19 @@ def main() -> None:
                 x = (larghezza_schermo - testo_render.get_width()) // 2
                 y = 350 + i * 100  # Distanza 100 pixel tra le opzioni
                 screen.blit(testo_render, (x, y))
+
+                # Aggiungi indicazione del tasto in grigio sotto ogni opzione
+                if i == 0:  # Numeri
+                    tasto_indicazione = Fontpiccolo.render("premi N", True, (100, 100, 100))
+                elif i == 1:  # Colori
+                    tasto_indicazione = Fontpiccolo.render("premi C", True, (100, 100, 100))
+                else:  # Lettere
+                    tasto_indicazione = Fontpiccolo.render("premi L", True, (100, 100, 100))
+                
+                x_tasto = (larghezza_schermo - tasto_indicazione.get_width()) // 2
+                y_tasto = y + 45  # Metti l'indicazione sotto l'opzione
+                screen.blit(tasto_indicazione, (x_tasto, y_tasto))
+                
             
             # Istruzione per cambiare utente
             cambio = Fontpiccolo.render("Premi ESC per cambiare utente", True, (100, 100, 100))
