@@ -22,7 +22,8 @@ from platformdirs import PlatformDirs
 # ==============================================
 # Nome del file dove salviamo i dati dei giocatori
 dirs = PlatformDirs("codicesegreto", ensure_exists=True)
-FILE_GIOCATORI = dirs.user_data_dir + "/giocatori.json"  
+FILE_GIOCATORI = dirs.user_data_dir + "/giocatori.json"
+
 
 def carica_giocatori():
     """Carica i dati dei giocatori dal file JSON e aggiorna i vecchi profili"""
@@ -41,8 +42,6 @@ def carica_giocatori():
                 dati['stelle'] = 0  # Aggiunge stelle con valore 0
             if 'nome_completo' not in dati:
                 dati['nome_completo'] = "Sconosciuto"
-            if 'anno' not in dati:
-                dati['anno'] = 0
         
         return giocatori  # Restituisce il dizionario con tutti i giocatori
     return {}  # Se il file non esiste, restituisce un dizionario vuoto
@@ -56,12 +55,11 @@ def salva_giocatori(giocatori):
         # ensure_ascii=False permette caratteri accentati
         json.dump(giocatori, f, indent=4, ensure_ascii=False)
 
-def crea_nuovo_giocatore(nome_utente, nome_completo, anno):
+def crea_nuovo_giocatore(nome_utente, nome_completo):
     """Crea un nuovo profilo giocatore con i dati anagrafici"""
     return {
         "nome_utente": nome_utente,      # Il nickname per giocare
         "nome_completo": nome_completo,  # Nome e cognome reali
-        "anno": anno,                    # Anno di nascita
         "stelle": 0                      # Stelle accumulate (inizia da 0)
     }
 
@@ -138,9 +136,8 @@ def main() -> None:
     giocatore_corrente = None  # Dati del giocatore attualmente loggato
     
     # Campi del modulo di registrazione
-    campo_corrente = 0  # 0 = nome completo, 1 = anno, 2 = nome utente
+    campo_corrente = 0  # 0 = nome completo, 1  = nome utente
     nome_completo = ""   # Memorizza il nome e cognome inseriti
-    anno_nascita = ""    # Memorizza l'anno di nascita inserito
     nome_utente = ""     # Memorizza il nome utente scelto
     
     # Testo inserito nel campo corrente (quello che l'utente sta scrivendo)
@@ -223,35 +220,19 @@ def main() -> None:
                             if input_testo:
                                 nome_completo = input_testo
                                 campo_corrente = 1
-                                input_testo = anno_nascita
+                                input_testo = nome_utente
                                 messaggio_errore = ""
                             else:
                                 messaggio_errore = "Inserisci nome e cognome"
                         
-                        # Se siamo al campo 1 (anno)
-                        elif campo_corrente == 1:
-                            if input_testo:
-                                try:
-                                    anno = int(input_testo)
-                                    if 1900 <= anno <= 2024:
-                                        anno_nascita = input_testo
-                                        campo_corrente = 2
-                                        input_testo = nome_utente
-                                        messaggio_errore = ""
-                                    else:
-                                        messaggio_errore = "Anno non valido (1900-2024)"
-                                except ValueError:
-                                    messaggio_errore = "Inserisci un anno valido"
-                            else:
-                                messaggio_errore = "Inserisci l'anno di nascita"
                         
-                        # Se siamo al campo 2 (nome utente) - CONFERMA FINALE
-                        elif campo_corrente == 2:
+                        # Se siamo al campo 1 (nome utente) - CONFERMA FINALE
+                        elif campo_corrente == 1:
                             if input_testo:
                                 nome_utente = input_testo
                                 
                                 # Controlla che tutti i campi siano compilati
-                                if nome_completo and anno_nascita and nome_utente:
+                                if nome_completo and nome_utente:
                                     
                                     # ===== PARTE CORRETTA PER IL CARICAMENTO =====
                                     # Verifica se il nome utente ESISTE GIA'
@@ -260,8 +241,7 @@ def main() -> None:
                                         giocatore_corrente = giocatori[nome_utente]
                                         
                                         # Verifica che i dati anagrafici corrispondano (sicurezza)
-                                        if (giocatore_corrente['nome_completo'] == nome_completo and 
-                                            giocatore_corrente['anno'] == int(anno_nascita)):
+                                        if (giocatore_corrente['nome_completo'] == nome_completo):
                                             
                                             print(f"Bentornato {nome_utente}! Hai {giocatore_corrente['stelle']}")
                                             
@@ -271,7 +251,6 @@ def main() -> None:
                                             # Reset variabili login
                                             campo_corrente = 0
                                             nome_completo = ""
-                                            anno_nascita = ""
                                             nome_utente = ""
                                             input_testo = ""
                                             messaggio_errore = ""
@@ -284,8 +263,7 @@ def main() -> None:
                                         # NUOVO GIOCATORE - crea nuovo profilo
                                         giocatore_corrente = crea_nuovo_giocatore(
                                             nome_utente, 
-                                            nome_completo, 
-                                            int(anno_nascita)
+                                            nome_completo
                                         )
                                         giocatori[nome_utente] = giocatore_corrente
                                         salva_giocatori(giocatori)
@@ -315,9 +293,8 @@ def main() -> None:
                         # Aggiorna anche la variabile del campo corrente
                         if campo_corrente == 0:
                             nome_completo = input_testo
+                        
                         elif campo_corrente == 1:
-                            anno_nascita = input_testo
-                        elif campo_corrente == 2:
                             nome_utente = input_testo
                     
                     # Altri tasti stampabili (lettere, numeri, ecc.)
@@ -326,11 +303,8 @@ def main() -> None:
                         if campo_corrente == 0 and len(input_testo) < 30:
                             input_testo += event.unicode  # Aggiunge il carattere
                             nome_completo = input_testo
-                        # Per l'anno accetta solo numeri (isdigit) e max 4 caratteri
-                        elif campo_corrente == 1 and len(input_testo) < 4 and event.unicode.isdigit():
-                            input_testo += event.unicode
-                            anno_nascita = input_testo
-                        elif campo_corrente == 2 and len(input_testo) < 15:
+                        
+                        elif campo_corrente == 1 and len(input_testo) < 10:
                             input_testo += event.unicode
                             nome_utente = input_testo
 
@@ -385,7 +359,6 @@ def main() -> None:
                         stato = "login"
                         campo_corrente = 0
                         nome_completo = ""
-                        anno_nascita = ""
                         nome_utente = ""
                         input_testo = ""
                         messaggio_errore = ""
@@ -776,11 +749,11 @@ def main() -> None:
                 pygame.draw.line(screen, (0, 0, 0), (cursore_x, 315), (cursore_x, 345), 2)
             
             # ==============================================
-            # CAMPO 2: ANNO DI NASCITA
+            # CAMPO 2: NOME UTENTE
             # ==============================================
-            label2 = Normalfont.render("Anno di Nascita:", True, (0, 0, 0))
+            label2 = Normalfont.render("Nome Utente (unico):", True, (0, 0, 0))
             screen.blit(label2, (300, 380))
-            # Riquadro per il campo 2 (Rect: x, y, larghezza, altezza)
+            # Riquadro per il campo 3 (Rect: x, y, larghezza, altezza)
             rect2 = pygame.Rect(300, 430, 600, 60)
             # Bordo blu se è il campo corrente, altrimenti grigio
             colore_bordo2 = (0, 100, 200) if campo_corrente == 1 else (100, 100, 100)
@@ -790,38 +763,14 @@ def main() -> None:
             pygame.draw.rect(screen, colore_bordo2, rect2, 3, border_radius=8)
             
             # Testo inserito nel campo
-            testo2 = Fontpiccolo.render(anno_nascita, True, (0, 0, 0))
+            testo2 = Fontpiccolo.render(nome_utente, True, (0, 0, 0))
             screen.blit(testo2, (310, 445))
-            
-            # Cursore lampeggiante (appare e scompare ogni 500ms)
-            # pygame.time.get_ticks() restituisce millisecondi dall'avvio
-            if campo_corrente == 1 and pygame.time.get_ticks() % 1000 < 500:
-                cursore_x = 310 + testo2.get_width()
-                pygame.draw.line(screen, (0, 0, 0), (cursore_x, 445), (cursore_x, 475), 2)
-            
-            # ==============================================
-            # CAMPO 3: NOME UTENTE
-            # ==============================================
-            label3 = Normalfont.render("Nome Utente (unico):", True, (0, 0, 0))
-            screen.blit(label3, (300, 510))
-            # Riquadro per il campo 3 (Rect: x, y, larghezza, altezza)
-            rect3 = pygame.Rect(300, 560, 600, 60)
-            # Bordo blu se è il campo corrente, altrimenti grigio
-            colore_bordo3 = (0, 100, 200) if campo_corrente == 2 else (100, 100, 100)
-            # Disegna il rettangolo bianco di sfondo
-            pygame.draw.rect(screen, (255, 255, 255), rect3, border_radius=8)
-            # Disegna il bordo
-            pygame.draw.rect(screen, colore_bordo3, rect3, 3, border_radius=8)
-            
-            # Testo inserito nel campo
-            testo3 = Fontpiccolo.render(nome_utente, True, (0, 0, 0))
-            screen.blit(testo3, (310, 575))
             
             # Cursore lampeggiante (appare e scompare ogni 500ms)
             # pygame.time.get_ticks() restituisce millisecondi dall'avvio
             if campo_corrente == 2 and pygame.time.get_ticks() % 1000 < 500:
                 cursore_x = 310 + testo3.get_width()
-                pygame.draw.line(screen, (0, 0, 0), (cursore_x, 575), (cursore_x, 605), 2)
+                pygame.draw.line(screen, (0, 0, 0), (cursore_x, 380), (cursore_x, 445), 2)
             
             # ==============================================
             # MESSAGGI E ISTRUZIONI
@@ -832,7 +781,12 @@ def main() -> None:
                 errore_render = Fontpiccolo.render(messaggio_errore, True, (200, 0, 0))
                 x_errore = (larghezza_schermo - errore_render.get_width()) // 2
                 screen.blit(errore_render, (x_errore, 640))
-                   
+            
+            # Indicazione più specifica
+            messaggio = Fontpiccolo.render("premere INVIO per passare al secondo campo di inserimento", True, (100, 100, 100))
+            x_messaggio = (larghezza_schermo - messaggio.get_width()) //2
+            screen.blit(messaggio, (x_messaggio, 575))
+            
         # ==============================================
         # SCHERMATA MENU
         # ==============================================
@@ -868,6 +822,10 @@ def main() -> None:
             cambio = Fontpiccolo.render("Premi ESC per cambiare utente", True, (100, 100, 100))
             x_cambio = (larghezza_schermo - cambio.get_width()) // 2
             screen.blit(cambio, (x_cambio, 750))
+            
+            # Indicazione per il giocatore
+            indicazione = Fontpiccolo.render("Premi la lettera associata tra parentesi per scegliere la modalità di gioco", True, (100, 100, 100))
+            screen.blit(indicazione, (x_cambio, 900))
         
         # ==============================================
         # STATO GIOCO - NUMERI
@@ -898,6 +856,7 @@ def main() -> None:
                     "Qui giocherai con i numeri!",
                     "Il computer penserà a 4 numeri (da 1 a 6)",
                     "Tu dovrai indovinarli in 10 tentativi",
+                    "Attenzione! i numeri possono essere ripetuti!",
                     "Premi I per iniziare a giocare",
                     "Premi ESC per tornare al menu"
                 ]
@@ -1221,6 +1180,7 @@ def main() -> None:
                     "Qui giocherai con le lettere!",
                     "Il computer penserà a 4 lettere (dalla a alla z)",
                     "Tu dovrai indovinarle in 10 tentativi",
+                     "Attenzione! Le lettere possono essere ripetuti!",
                     "Premi I per iniziare a giocare",
                     "Premi ESC per tornare al menu"
                 ]
@@ -1527,6 +1487,7 @@ def main() -> None:
                     "Qui giocherai con i colori!",
                     "Il computer penserà a 4 colori (numeri da 1 a 8)",
                     "Tu dovrai indovinarli in 10 tentativi",
+                     "Attenzione! I colori possono essere ripetuti!",
                     "Premi I per iniziare a giocare",
                     "Premi ESC per tornare al menu"
                 ]
@@ -1804,5 +1765,6 @@ def main() -> None:
 # (non se viene importato come modulo)
 if __name__ == "__main__":
     main()
+
 
 
