@@ -21,8 +21,9 @@ from platformdirs import PlatformDirs
 # FUNZIONI DI SALVATAGGIO
 # ==============================================
 # Nome del file dove salviamo i dati dei giocatori
-dirs = PlatformDirs("codicesegreto", ensure_exists=True)
+dirs = PlatformDirs("codicesegreto")
 FILE_GIOCATORI = dirs.user_data_dir + "/giocatori.json"
+os.makedirs(os.path.dirname(FILE_GIOCATORI), exist_ok=True)
 
 
 def carica_giocatori():
@@ -545,17 +546,11 @@ def main() -> None:
                             for pos in range(4):
                                 if tentativo_corrente[pos] == codice_segreto[pos]:
                                     feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} CORRETTO"
+                                elif tentativo_corrente[pos] in codice_segreto:
+                                    feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} PRESENTE"
+                                
                                 else:
                                     feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} SBAGLIATO"
-
-                            # Controlla quali numeri sono presenti ma in posizione sbagliata
-                            numeri_presenti = []
-                            for pos in range(4):
-                                if (tentativo_corrente[pos] != codice_segreto[pos] and 
-                                    tentativo_corrente[pos] in codice_segreto):
-                                    # Evita di aggiungere duplicati
-                                    if tentativo_corrente[pos] not in numeri_presenti:
-                                        numeri_presenti.append(tentativo_corrente[pos])
                             
                             print(f"Tentativo {tentativi_fatti}: {tentativo_corrente}")
                             
@@ -608,16 +603,11 @@ def main() -> None:
                             for pos in range(4):
                                 if tentativo_corrente[pos] == codice_segreto[pos]:
                                     feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} CORRETTO"
+                                elif tentativo_corrente[pos] in codice_segreto:
+                                    feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} PRESENTE"
+                                
                                 else:
                                     feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} SBAGLIATO"
-                            
-                            # Controlla lettere presenti ma in posizione sbagliata
-                            lettere_presenti = []
-                            for pos in range(4):
-                                if (tentativo_corrente[pos] != codice_segreto[pos] and 
-                                    tentativo_corrente[pos] in codice_segreto):
-                                    if tentativo_corrente[pos] not in lettere_presenti:
-                                        lettere_presenti.append(tentativo_corrente[pos])
                             
                             print(f"Tentativo {tentativi_fatti}: {tentativo_corrente}")
                             
@@ -671,6 +661,9 @@ def main() -> None:
                                 if pos < len(tentativo_corrente) and pos < len(codice_segreto):
                                     if int(tentativo_corrente[pos]) == codice_segreto[pos]:
                                         feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} {nomi_colori[int(tentativo_corrente[pos])]} CORRETTO"
+                                    elif int(tentativo_corrente[pos]) != codice_segreto[pos] and int(tentativo_corrente[pos]) in codice_segreto:
+                                        feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} {nomi_colori[int(tentativo_corrente[pos])]} PRESENTE"
+                                    
                                     else:
                                         feedback_dettagliato[pos] = f"Posizione {pos+1}: {tentativo_corrente[pos]} {nomi_colori[int(tentativo_corrente[pos])]} SBAGLIATO"
                             
@@ -978,7 +971,12 @@ def main() -> None:
                         for i, fb in enumerate(feedback_dettagliato):
                             if fb:  # Se c'è un feedback per questa posizione
                                 # Verde per CORRETTO, rosso per SBAGLIATO
-                                colore = (0, 150, 0) if "CORRETTO" in fb else (200, 0, 0)
+                                if "CORRETTO" in fb:
+                                    colore = (0, 150, 0)
+                                elif "SBAGLIATO" in fb:
+                                    colore = (200, 0, 0)
+                                else:
+                                    colore = (200, 100, 0)
                                 fb_text = Fontpiccolo.render(fb, True, colore)
                                 screen.blit(fb_text, (720, y_pos))
                                 y_pos += 30  # Sposta in basso per il prossimo feedback
@@ -996,13 +994,6 @@ def main() -> None:
                                 # Evita di aggiungere duplicati
                                 if ultimo[pos] not in numeri_presenti:
                                     numeri_presenti.append(ultimo[pos])
-                        
-                        # Se ci sono numeri presenti, li mostra
-                        if numeri_presenti:
-                            presenti_text = f"Presenti: {', '.join(numeri_presenti)}"
-                            presenti_render = Fontpiccolo.render(presenti_text, True, (200, 100, 0))
-                            screen.blit(presenti_render, (720, y_pos))
-                            y_pos += 30
                 
                 # ==============================================
                 # STORICO TENTATIVI
@@ -1283,38 +1274,27 @@ def main() -> None:
                 # SUGGERIMENTI (feedback per l'ultimo tentativo)
                 # ==============================================
                 if feedback_dettagliato[0] or storico_tentativi:
-                    # Titolo della sezione in verde
+                    # Titolo della sezione "SUGGERIMENTI" in verde
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
                     screen.blit(suggerimenti_label, (700, 160))
                     
-                    y_pos = 210  # Posizione verticale iniziale
+                    y_pos = 210  # Posizione verticale iniziale per i suggerimenti
                     
-                    # Mostra il feedback per ogni posizione
+                    # Mostra il feedback per ogni posizione (es. "Posizione 1: 3 CORRETTO")
                     if feedback_dettagliato[0]:
                         for i, fb in enumerate(feedback_dettagliato):
-                            if fb:
-                                # Verde per CORRETTO, rosso per SBAGLIATO
-                                colore = (0, 150, 0) if "CORRETTO" in fb else (200, 0, 0)
+                            if fb:  # Se c'è un feedback per questa posizione
+                                # Verde per CORRETTO, rosso per SBAGLIATO e arancione se è PRESENTE
+                                if "CORRETTO" in fb:
+                                    colore = (0, 150, 0)
+                                elif "SBAGLIATO" in fb:
+                                    colore = (200, 0, 0)
+                                else:
+                                    colore = (200, 100, 0)
                                 fb_text = Fontpiccolo.render(fb, True, colore)
                                 screen.blit(fb_text, (720, y_pos))
-                                y_pos += 30
-                    
-                    # Mostra le lettere presenti ma in posizione sbagliata
-                    if storico_tentativi:
-                        ultimo = storico_tentativi[-1]
-                        lettere_presenti = []
-                        for pos in range(4):
-                            # Se la lettera è diversa da quella segreta MA è presente nel codice
-                            if (ultimo[pos] != codice_segreto[pos] and 
-                                ultimo[pos] in codice_segreto):
-                                if ultimo[pos] not in lettere_presenti:
-                                    lettere_presenti.append(ultimo[pos])
-                        
-                        if lettere_presenti:
-                            presenti_text = f"Presenti: {', '.join(lettere_presenti)}"
-                            presenti_render = Fontpiccolo.render(presenti_text, True, (200, 100, 0))
-                            screen.blit(presenti_render, (720, y_pos))
-                            y_pos += 30
+                                y_pos += 30  # Sposta in basso per il prossimo feedback                    
+                
                 
                 # ==============================================
                 # STORICO TENTATIVI
@@ -1624,41 +1604,27 @@ def main() -> None:
                 # SUGGERIMENTI (feedback per l'ultimo tentativo)
                 # ==============================================
                 if feedback_dettagliato[0] or storico_tentativi:
-                    # Titolo della sezione in verde
+                    # Titolo della sezione "SUGGERIMENTI" in verde
                     suggerimenti_label = Normalfont.render("SUGGERIMENTI:", True, (0, 100, 0))
                     screen.blit(suggerimenti_label, (700, 160))
                     
-                    y_pos = 210  # Posizione verticale iniziale
+                    y_pos = 210  # Posizione verticale iniziale per i suggerimenti
                     
-                    # Mostra il feedback per ogni posizione
+                    # Mostra il feedback per ogni posizione (es. "Posizione 1: 3 CORRETTO")
                     if feedback_dettagliato[0]:
                         for i, fb in enumerate(feedback_dettagliato):
-                            if fb:
+                            if fb:  # Se c'è un feedback per questa posizione
                                 # Verde per CORRETTO, rosso per SBAGLIATO
-                                colore = (0, 150, 0) if "CORRETTO" in fb else (200, 0, 0)
+                                if "CORRETTO" in fb:
+                                    colore = (0, 150, 0)
+                                elif "SBAGLIATO" in fb:
+                                    colore = (200, 0, 0)
+                                else:
+                                    colore = (200, 100, 0)
                                 fb_text = Fontpiccolo.render(fb, True, colore)
                                 screen.blit(fb_text, (720, y_pos))
-                                y_pos += 30
-                    
-                    # Mostra i numeri presenti ma in posizione sbagliata
-                    if storico_tentativi:
-                        ultimo = storico_tentativi[-1]
-                        numeri_presenti = []
-                        for pos in range(4):
-                            # Controlla ogni posizione
-                            if pos < len(ultimo) and pos < len(codice_segreto):
-                                # Se il numero è diverso da quello segreto MA è presente nel codice
-                                if int(ultimo[pos]) != codice_segreto[pos] and int(ultimo[pos]) in codice_segreto:
-                                    # Evita duplicati
-                                    if ultimo[pos] not in numeri_presenti:
-                                        numeri_presenti.append(ultimo[pos])
-                        
-                        if numeri_presenti:
-                            presenti_text = f"Presenti: {', '.join(numeri_presenti)}"
-                            presenti_render = Fontpiccolo.render(presenti_text, True, (200, 100, 0))
-                            screen.blit(presenti_render, (720, y_pos))
-                            y_pos += 30
-                
+                                y_pos += 30  # Sposta in basso per il prossimo feedback
+                              
                 # ==============================================
                 # TENTATIVI (con cerchietti colorati)
                 # ==============================================
@@ -1778,6 +1744,3 @@ def main() -> None:
 # (non se viene importato come modulo)
 if __name__ == "__main__":
     main()
-
-
-
