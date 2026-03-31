@@ -711,7 +711,7 @@ def main() -> None:
             screen.blit(titolo, (x_titolo, 50))  # Disegna il testo a (x, y=50)
             
             # Sottotitolo
-            sottotitolo = Normalfont.render("Registrazione Nuovo Giocatore", True, (0, 0, 0))
+            sottotitolo = Normalfont.render("Registrazione giocatore", True, (0, 0, 0))
             x_sotto = (larghezza_schermo - sottotitolo.get_width()) // 2
             screen.blit(sottotitolo, (x_sotto, 150))
             
