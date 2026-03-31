@@ -21,9 +21,8 @@ from platformdirs import PlatformDirs
 # FUNZIONI DI SALVATAGGIO
 # ==============================================
 # Nome del file dove salviamo i dati dei giocatori
-dirs = PlatformDirs("codicesegreto")
+dirs = PlatformDirs("codicesegreto", ensure_exists = True)
 FILE_GIOCATORI = dirs.user_data_dir + "/giocatori.json"
-os.makedirs(os.path.dirname(FILE_GIOCATORI), exist_ok=True)
 
 
 def carica_giocatori():
